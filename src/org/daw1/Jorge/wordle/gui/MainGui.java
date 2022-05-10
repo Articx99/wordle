@@ -25,15 +25,21 @@ public class MainGui extends javax.swing.JFrame {
      * Creates new form MainGui
      */
     public MainGui() {
-        initComponents();
+        initComponents();        
         inicializarLabesl();
+        //hideLabels();
     }
     
-    public void test(){
+    public void hideLabels(){
         for(int i = 0; i< labels.length;i++){
             JLabel[] label = labels[i];
+            for(int j = 0; j < label.length;j++){
+                JLabel jlabel = label[j];
+                jlabel.setVisible(false);
+            }
             
-    }
+            
+        }
     }
     
     public final void inicializarLabesl(){
@@ -43,9 +49,13 @@ public class MainGui extends javax.swing.JFrame {
                     String nombreLabel = "jLabel"+i+"_"+j;
                     javax.swing.JLabel aux = (javax.swing.JLabel)this.getClass().getDeclaredField(nombreLabel).get(this);
                     labels[i-1][j-1] = aux;
+                    
+                    
                 } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
                     Logger.getLogger(MainGui.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                JLabel label =labels[i-1][j-1];
+                label.setVisible(false);
             }
         }
        
