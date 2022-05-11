@@ -5,6 +5,8 @@
  */
 package org.daw1.Jorge.wordle;
 
+import java.io.File;
+
 /**
  *
  * @author alumno
@@ -12,7 +14,7 @@ package org.daw1.Jorge.wordle;
 public interface IMotores {
     public boolean checkPalabra(String string);
 
-    public String obtenerPalabraAleatoria();
+    public String obtenerPalabraAleatoria(File file);
     
     
 }

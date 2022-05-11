@@ -4,6 +4,7 @@
  */
 package org.daw1.Jorge.wordle.gui;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,13 +16,15 @@ import org.daw1.Jorge.wordle.motores.MotorTest;
  * @author joric
  */
 public class MainGui extends javax.swing.JFrame {
+    private static final org.daw1.Jorge.wordle.motores.MotorTest gm = new org.daw1.Jorge.wordle.motores.MotorTest(); 
     private static final java.awt.Color COLOR_VERDE = new java.awt.Color(51,102,0);
     private static final java.awt.Color COLOR_AMARILLO = new java.awt.Color(204,153,0);
     private static final java.awt.Color COLOR_ROJO = new java.awt.Color(204,0,0);
     private static final int MAX_INTENTOS = 6;
     private static final int TAMNHO_PALABRA = 5;
     private final javax.swing.JLabel[][] labels = new javax.swing.JLabel[MAX_INTENTOS][TAMNHO_PALABRA];
-    private int i = 0;
+    private int contadorFila = 0;
+    private File ficheroActual = null;
     
     /**
      * Creates new form MainGui
@@ -29,19 +32,22 @@ public class MainGui extends javax.swing.JFrame {
     public MainGui() {
         initComponents();        
         inicializarLabesl();
-        //hideLabels();
+        
     }
     
-    public void hideLabels(int i){
+    public void checkCorrect(int x){
         JLabel[][] label = labels;    
         String text = this.palabrajTextField.getText().toUpperCase();
         
-        if(i < label.length){
+        if(x < label.length){
             for(int j = 0; j < text.length();j++){                                
-                label[i][j].setVisible(true);                   
-                label[i][j].setText(Character.toString(text.charAt(j)));
-                label[i][j].setForeground(COLOR_VERDE);
+                label[x][j].setVisible(true);                   
+                label[x][j].setText(Character.toString(text.charAt(j)));
+            
+                
+                label[x][j].setForeground(COLOR_VERDE);
             } 
+            contadorFila++;
            
         }
         
@@ -49,6 +55,8 @@ public class MainGui extends javax.swing.JFrame {
             
         
     }
+    
+    
     
     public final void inicializarLabesl(){
         for(int i = 1; i <= MAX_INTENTOS;i++){
@@ -79,6 +87,7 @@ public class MainGui extends javax.swing.JFrame {
         java.awt.GridBagConstraints gridBagConstraints;
 
         MotoresbuttonGroup = new javax.swing.ButtonGroup();
+        IdiomabuttonGroup = new javax.swing.ButtonGroup();
         MainjPanel = new javax.swing.JPanel();
         ZonaLetrasjPanel = new javax.swing.JPanel();
         jLabel1_1 = new javax.swing.JLabel();
@@ -127,11 +136,14 @@ public class MainGui extends javax.swing.JFrame {
         errorjPanel3 = new javax.swing.JPanel();
         errorjLabel = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
-        jMenu2 = new javax.swing.JMenu();
+        jMenuArchivo = new javax.swing.JMenu();
+        jMenuMotores = new javax.swing.JMenu();
         jRadioButtonTest = new javax.swing.JRadioButtonMenuItem();
         jRadioButtonArchivoTexto = new javax.swing.JRadioButtonMenuItem();
         jRadioButtonBasesDatos = new javax.swing.JRadioButtonMenuItem();
+        jMenuIdioma = new javax.swing.JMenu();
+        jRadioButtonMenuItemEspanhol = new javax.swing.JRadioButtonMenuItem();
+        jRadioButtonMenuItemiIngles = new javax.swing.JRadioButtonMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("JorgeRodriguez");
@@ -355,7 +367,7 @@ public class MainGui extends javax.swing.JFrame {
 
         BottomjPanel.add(estadojPanel);
 
-        palabrajTextField.setPreferredSize(new java.awt.Dimension(120, 20));
+        palabrajTextField.setPreferredSize(new java.awt.Dimension(130, 25));
         inputPalabrasjPanel.add(palabrajTextField);
 
         enviarjButton.setText("Enviar");
@@ -384,6 +396,7 @@ public class MainGui extends javax.swing.JFrame {
 
         errorjLabel.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         errorjLabel.setForeground(new java.awt.Color(204, 0, 0));
+        errorjLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -395,25 +408,48 @@ public class MainGui extends javax.swing.JFrame {
 
         MainjPanel.add(BottomjPanel, java.awt.BorderLayout.PAGE_END);
 
-        jMenu1.setText("Archivo");
-        jMenuBar1.add(jMenu1);
+        jMenuArchivo.setText("Archivo");
+        jMenuBar1.add(jMenuArchivo);
 
-        jMenu2.setText("Motores");
+        jMenuMotores.setText("Motores");
 
         MotoresbuttonGroup.add(jRadioButtonTest);
         jRadioButtonTest.setSelected(true);
-        jRadioButtonTest.setText("jRadioButtonMenuItem1");
-        jMenu2.add(jRadioButtonTest);
+        jRadioButtonTest.setText("MotorTest");
+        jMenuMotores.add(jRadioButtonTest);
 
         MotoresbuttonGroup.add(jRadioButtonArchivoTexto);
-        jRadioButtonArchivoTexto.setText("jRadioButtonMenuItem2");
-        jMenu2.add(jRadioButtonArchivoTexto);
+        jRadioButtonArchivoTexto.setText("MotorFicheros");
+        jMenuMotores.add(jRadioButtonArchivoTexto);
 
         MotoresbuttonGroup.add(jRadioButtonBasesDatos);
-        jRadioButtonBasesDatos.setText("jRadioButtonMenuItem3");
-        jMenu2.add(jRadioButtonBasesDatos);
+        jRadioButtonBasesDatos.setText("MotorBasesDeDatos");
+        jRadioButtonBasesDatos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButtonBasesDatosActionPerformed(evt);
+            }
+        });
+        jMenuMotores.add(jRadioButtonBasesDatos);
 
-        jMenuBar1.add(jMenu2);
+        jMenuBar1.add(jMenuMotores);
+
+        jMenuIdioma.setText("Idioma");
+
+        IdiomabuttonGroup.add(jRadioButtonMenuItemEspanhol);
+        jRadioButtonMenuItemEspanhol.setSelected(true);
+        jRadioButtonMenuItemEspanhol.setText("espanhol");
+        jRadioButtonMenuItemEspanhol.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButtonMenuItemEspanholActionPerformed(evt);
+            }
+        });
+        jMenuIdioma.add(jRadioButtonMenuItemEspanhol);
+
+        IdiomabuttonGroup.add(jRadioButtonMenuItemiIngles);
+        jRadioButtonMenuItemiIngles.setText("Ingles");
+        jMenuIdioma.add(jRadioButtonMenuItemiIngles);
+
+        jMenuBar1.add(jMenuIdioma);
 
         setJMenuBar(jMenuBar1);
 
@@ -432,13 +468,28 @@ public class MainGui extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void enviarjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enviarjButtonActionPerformed
-        
-        hideLabels(i);
-        if(i < labels.length){
-            i++;
+        this.errorjLabel.setText("");
+        if(gm.checkPalabra(this.palabrajTextField.getText())){
+            checkCorrect(contadorFila);
         }
+        else{
+            this.errorjLabel.setText("Error de caracteres");
+        }
+        
+        
                 
     }//GEN-LAST:event_enviarjButtonActionPerformed
+
+    private void jRadioButtonBasesDatosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonBasesDatosActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jRadioButtonBasesDatosActionPerformed
+
+    private void jRadioButtonMenuItemEspanholActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonMenuItemEspanholActionPerformed
+        if(this.jRadioButtonMenuItemEspanhol.isSelected()){
+            ficheroActual = new File("palabrasEspañol.txt");
+        }
+        
+    }//GEN-LAST:event_jRadioButtonMenuItemEspanholActionPerformed
 
     /**
      * @param args the command line arguments
@@ -477,6 +528,7 @@ public class MainGui extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel BottomjPanel;
+    private javax.swing.ButtonGroup IdiomabuttonGroup;
     private javax.swing.JPanel MainjPanel;
     private javax.swing.ButtonGroup MotoresbuttonGroup;
     private javax.swing.JPanel ZonaLetrasjPanel;
@@ -521,11 +573,14 @@ public class MainGui extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6_3;
     private javax.swing.JLabel jLabel6_4;
     private javax.swing.JLabel jLabel6_5;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenuArchivo;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenu jMenuIdioma;
+    private javax.swing.JMenu jMenuMotores;
     private javax.swing.JRadioButtonMenuItem jRadioButtonArchivoTexto;
     private javax.swing.JRadioButtonMenuItem jRadioButtonBasesDatos;
+    private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItemEspanhol;
+    private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItemiIngles;
     private javax.swing.JRadioButtonMenuItem jRadioButtonTest;
     private javax.swing.JLabel maljLabel;
     private javax.swing.JPanel maljPanel;

@@ -5,6 +5,7 @@
  */
 package org.daw1.Jorge.wordle.motores;
 
+import java.io.File;
 import org.daw1.Jorge.wordle.IMotores;
 
 /**
@@ -23,7 +24,7 @@ public class MotorTest implements IMotores{
         return palabra.matches("[A-Z-a-z]{5}");
     }
     @Override
-    public String obtenerPalabraAleatoria(){
+    public String obtenerPalabraAleatoria(File file){
         return "";
     }
     
