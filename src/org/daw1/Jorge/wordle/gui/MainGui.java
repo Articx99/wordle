@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JLabel;
+import org.daw1.Jorge.wordle.motores.MotorTest;
 
 /**
  *
@@ -20,6 +21,7 @@ public class MainGui extends javax.swing.JFrame {
     private static final int MAX_INTENTOS = 6;
     private static final int TAMNHO_PALABRA = 5;
     private final javax.swing.JLabel[][] labels = new javax.swing.JLabel[MAX_INTENTOS][TAMNHO_PALABRA];
+    private int i = 0;
     
     /**
      * Creates new form MainGui
@@ -30,16 +32,22 @@ public class MainGui extends javax.swing.JFrame {
         //hideLabels();
     }
     
-    public void hideLabels(){
-        for(int i = 0; i< labels.length;i++){
-            JLabel[] label = labels[i];
-            for(int j = 0; j < label.length;j++){
-                JLabel jlabel = label[j];
-                jlabel.setVisible(false);
-            }
-            
-            
+    public void hideLabels(int i){
+        JLabel[][] label = labels;    
+        String text = this.palabrajTextField.getText().toUpperCase();
+        
+        if(i < label.length){
+            for(int j = 0; j < text.length();j++){                                
+                label[i][j].setVisible(true);                   
+                label[i][j].setText(Character.toString(text.charAt(j)));
+                label[i][j].setForeground(COLOR_VERDE);
+            } 
+           
         }
+        
+            
+            
+        
     }
     
     public final void inicializarLabesl(){
@@ -351,6 +359,11 @@ public class MainGui extends javax.swing.JFrame {
         inputPalabrasjPanel.add(palabrajTextField);
 
         enviarjButton.setText("Enviar");
+        enviarjButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                enviarjButtonActionPerformed(evt);
+            }
+        });
         inputPalabrasjPanel.add(enviarjButton);
 
         BottomjPanel.add(inputPalabrasjPanel);
@@ -417,6 +430,15 @@ public class MainGui extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void enviarjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enviarjButtonActionPerformed
+        
+        hideLabels(i);
+        if(i < labels.length){
+            i++;
+        }
+                
+    }//GEN-LAST:event_enviarjButtonActionPerformed
 
     /**
      * @param args the command line arguments
