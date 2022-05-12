@@ -5,7 +5,14 @@
 package org.daw1.Jorge.wordle.gui;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JLabel;
@@ -15,49 +22,118 @@ import org.daw1.Jorge.wordle.motores.MotorTest;
  *
  * @author joric
  */
-public class MainGui extends javax.swing.JFrame {
+public final class MainGui extends javax.swing.JFrame {
     private static final org.daw1.Jorge.wordle.motores.MotorTest gm = new org.daw1.Jorge.wordle.motores.MotorTest(); 
     private static final java.awt.Color COLOR_VERDE = new java.awt.Color(51,102,0);
     private static final java.awt.Color COLOR_AMARILLO = new java.awt.Color(204,153,0);
     private static final java.awt.Color COLOR_ROJO = new java.awt.Color(204,0,0);
+    private static final java.awt.Color COLOR_BLACK = new java.awt.Color(0,0,0);
     private static final int MAX_INTENTOS = 6;
     private static final int TAMNHO_PALABRA = 5;
     private final javax.swing.JLabel[][] labels = new javax.swing.JLabel[MAX_INTENTOS][TAMNHO_PALABRA];
     private int contadorFila = 0;
-    private File ficheroActual = null;
+    
+    private File ficheroActual = new File("espanolPalabras");
+    private final Map<String,Set<Character>> palabrasEncontradas = new HashMap<>();
+    
+       
+    private final org.daw1.Jorge.wordle.motores.MotorFicheroTexto motorFicheros = new org.daw1.Jorge.wordle.motores.MotorFicheroTexto();
     
     /**
      * Creates new form MainGui
      */
-    public MainGui() {
+    public MainGui() {       
         initComponents();        
         inicializarLabesl();
+        //checkLenguaje();
+        
         
     }
-    
+    /***
+    public void checkLenguaje(){
+        
+        ficheroActual = new File("palabrasEspañol.txt");
+        try {
+            motorFicheros.createFile(ficheroActual);
+            motorFicheros.cargarFichero(ficheroActual);
+        } catch (IOException ex) {
+            Logger.getLogger(MainGui.class.getName()).log(Level.SEVERE, null, ex);
+            }
+               
+    }
+    * **/
+    String palabraRed = "RED";
+    String palabraGreen = "GREEN";
+    String palabraYellow = "YELLOW";
     public void checkCorrect(int x){
+        String palabraAleatoria = motorFicheros.obtenerPalabraAleatoria();
+        
+        palabraAleatoria = palabraAleatoria.toUpperCase();
         JLabel[][] label = labels;    
         String text = this.palabrajTextField.getText().toUpperCase();
-        
+        char[] lAleatoria = palabraAleatoria.toCharArray();
+        char[] lInput = text.toCharArray();
         if(x < label.length){
-            for(int j = 0; j < text.length();j++){                                
-                label[x][j].setVisible(true);                   
-                label[x][j].setText(Character.toString(text.charAt(j)));
-            
+                                                 
+            if(palabraAleatoria.equals(text)){
+                for(int i = 0; i < text.length();i++){
+                    label[x][i].setVisible(true);                   
+                    label[x][i].setText(Character.toString(lInput[i]));                            
+                    label[x][i].setForeground(COLOR_VERDE);
+                    palabrasEncontradas.get(palabraGreen).add(lInput[i]);
+                }
                 
-                label[x][j].setForeground(COLOR_VERDE);
             } 
+            else{
+                for(int i = 0; i < text.length();i++){
+                    if(lInput[i] == lAleatoria[i]){
+                        label[x][i].setVisible(true);                   
+                        label[x][i].setText(Character.toString(lInput[i]));                            
+                        label[x][i].setForeground(COLOR_VERDE);
+                        palabrasEncontradas.get(palabraGreen).add(lInput[i]);
+                    }
+                    else if(palabraAleatoria.contains(lInput[i]+"")){
+                        label[x][i].setVisible(true);                   
+                        label[x][i].setText(Character.toString(lInput[i]));
+                        if(palabrasEncontradas.get(palabraGreen).contains(lInput[i])){
+                            label[x][i].setForeground(COLOR_BLACK);
+                            
+                        }
+                        else{
+                            label[x][i].setForeground(COLOR_AMARILLO);
+                            palabrasEncontradas.get(palabraYellow).add(lInput[i]);
+                        }
+                        
+                    }
+                    else{
+                        label[x][i].setVisible(true);                   
+                        label[x][i].setText(Character.toString(lInput[i]));                            
+                        label[x][i].setForeground(COLOR_ROJO);
+                        palabrasEncontradas.get(palabraRed).add(lInput[i]);
+                    }
+            }
+            }
+            StringBuilder sb = new StringBuilder();
+            sb.append(palabrasEncontradas.get(palabraRed));
+            sb.replace(0,1, "");
+            sb.replace(sb.length()-1,sb.length(), "");
+            this.maljLabel.setText(sb.toString());
+            sb.delete(0, sb.length());
+            sb.append(palabrasEncontradas.get(palabraGreen));
+            sb.replace(0,1, "");
+            sb.replace(sb.length()-1,sb.length(), "");
+            this.bienjLabel.setText(sb.toString());
+            sb.delete(0, sb.length());
+            sb.append(palabrasEncontradas.get(palabraYellow));
+            sb.replace(0,1, "");
+            sb.replace(sb.length()-1,sb.length(), "");
+            this.existenjLabel.setText(sb.toString());
             contadorFila++;
            
         }
-        
-            
-            
-        
+               
     }
-    
-    
-    
+  
     public final void inicializarLabesl(){
         for(int i = 1; i <= MAX_INTENTOS;i++){
             for(int j = 1;j <= TAMNHO_PALABRA; j++){
@@ -74,6 +150,9 @@ public class MainGui extends javax.swing.JFrame {
                 label.setVisible(false);
             }
         }
+        palabrasEncontradas.put(palabraRed, new TreeSet<>());
+        palabrasEncontradas.put(palabraGreen, new TreeSet<>());
+        palabrasEncontradas.put(palabraYellow, new TreeSet<>());
        
     }
     /**
@@ -469,7 +548,7 @@ public class MainGui extends javax.swing.JFrame {
 
     private void enviarjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enviarjButtonActionPerformed
         this.errorjLabel.setText("");
-        if(gm.checkPalabra(this.palabrajTextField.getText())){
+        if(motorFicheros.checkPalabra(this.palabrajTextField.getText())){
             checkCorrect(contadorFila);
         }
         else{

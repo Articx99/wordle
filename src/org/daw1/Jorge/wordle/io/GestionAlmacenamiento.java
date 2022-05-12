@@ -30,21 +30,6 @@ public class GestionAlmacenamiento {
         }
     } 
     
-    public Set<String> cargarFichero(File fichero) throws IOException{
-        if(fichero.exists()){
-            Set<String> sb = new HashSet<>();
-            try (BufferedReader br = new BufferedReader(new FileReader(fichero))){
-                String linea = br.readLine();
-                while(linea != null){
-                    sb.add(linea+"\n"); //(linea).append("\n");
-                    linea = br.readLine();
-                }
-                return sb;
-            }
-        }
-        else{
-            return null;
-        }
-    }
+    
     
 }

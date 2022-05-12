@@ -14,7 +14,7 @@ import java.io.File;
 public interface IMotores {
     public boolean checkPalabra(String string);
 
-    public String obtenerPalabraAleatoria(File file);
+    public String obtenerPalabraAleatoria();
     
     
 }

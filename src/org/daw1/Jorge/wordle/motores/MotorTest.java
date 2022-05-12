@@ -24,7 +24,7 @@ public class MotorTest implements IMotores{
         return palabra.matches("[A-Z-a-z]{5}");
     }
     @Override
-    public String obtenerPalabraAleatoria(File file){
+    public String obtenerPalabraAleatoria(){
         return "";
     }
     
