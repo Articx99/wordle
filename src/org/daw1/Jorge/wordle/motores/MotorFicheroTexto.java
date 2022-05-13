@@ -28,10 +28,10 @@ import org.daw1.Jorge.wordle.io.GestionAlmacenamiento;
  * @author alumno
  */
 public class MotorFicheroTexto implements IMotores{
-    File fileActual = new File("palabrasEspanhol.txt");
+    File fileActual = null;
     @Override
     public boolean checkPalabra(String palabra){
-        createFile(fileActual);
+        
         return palabra.matches("[A-Za-z]{5}") && existeFichero(fileActual);
     }
     @Override
@@ -71,10 +71,12 @@ public class MotorFicheroTexto implements IMotores{
             return sb;
         }
     }
-    private boolean existeFichero(File file){
+    public boolean existeFichero(File file){
         return file.exists();
     }
+    @Override
     public void createFile(File file){
+        fileActual = file;
         if(!file.exists()){
             try {
                 file.createNewFile();

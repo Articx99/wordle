@@ -25,7 +25,12 @@ public class MotorTest implements IMotores{
     }
     @Override
     public String obtenerPalabraAleatoria(){
-        return "";
+        return "CICLO";
+    }
+
+    @Override
+    public void createFile(File file) {
+         //To change body of generated methods, choose Tools | Templates.
     }
     
 }

@@ -29,6 +29,8 @@ public class ajustesPanelGui extends javax.swing.JDialog {
     private void initComponents() {
 
         mainjPanel1 = new javax.swing.JPanel();
+        titulojPanel = new javax.swing.JPanel();
+        titulojLabel = new javax.swing.JLabel();
         cuerpojPanel = new javax.swing.JPanel();
         anadirjPanel = new javax.swing.JPanel();
         insertarjPanel = new javax.swing.JPanel();
@@ -42,59 +44,60 @@ public class ajustesPanelGui extends javax.swing.JDialog {
         borrarjButton = new javax.swing.JButton();
         estadoBorradojPanel = new javax.swing.JPanel();
         estadoBorrarjLabel = new javax.swing.JLabel();
-        titulojPanel = new javax.swing.JPanel();
-        titulojLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(400, 300));
 
-        mainjPanel1.setLayout(new java.awt.BorderLayout());
+        mainjPanel1.setLayout(new java.awt.BorderLayout(1, 1));
 
-        cuerpojPanel.setLayout(new java.awt.GridLayout());
+        titulojPanel.setFont(new java.awt.Font("Dialog", 1, 36)); // NOI18N
+        titulojPanel.setLayout(new java.awt.GridBagLayout());
 
-        anadirjPanel.setLayout(new java.awt.GridLayout());
+        titulojLabel.setFont(new java.awt.Font("Dialog", 1, 36)); // NOI18N
+        titulojLabel.setText("Gestión Motor");
+        titulojPanel.add(titulojLabel, new java.awt.GridBagConstraints());
 
-        anadirjTextField.setText("jTextField1");
+        mainjPanel1.add(titulojPanel, java.awt.BorderLayout.PAGE_START);
+
+        cuerpojPanel.setLayout(new java.awt.GridLayout(2, 0, 0, 1));
+
+        anadirjPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 0, 12))); // NOI18N
+        anadirjPanel.setLayout(new java.awt.GridLayout(2, 0, 0, 1));
+
+        anadirjTextField.setPreferredSize(new java.awt.Dimension(160, 23));
         insertarjPanel.add(anadirjTextField);
 
-        anadirjButton.setText("jButton1");
+        anadirjButton.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
+        anadirjButton.setText("Añadir");
         insertarjPanel.add(anadirjButton);
 
         anadirjPanel.add(insertarjPanel);
 
         estadoInsertarjPanel.setLayout(new java.awt.GridBagLayout());
-
-        estadoInsertarjLabel.setText("jLabel1");
         estadoInsertarjPanel.add(estadoInsertarjLabel, new java.awt.GridBagConstraints());
 
         anadirjPanel.add(estadoInsertarjPanel);
 
         cuerpojPanel.add(anadirjPanel);
 
-        borrarjPanel.setLayout(new java.awt.GridLayout());
+        borrarjPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 0, 12))); // NOI18N
+        borrarjPanel.setLayout(new java.awt.GridLayout(2, 0, 0, 1));
 
-        borrarjTextField.setText("jTextField1");
+        borrarjTextField.setPreferredSize(new java.awt.Dimension(160, 23));
         borradojPanel.add(borrarjTextField);
 
-        borrarjButton.setText("jButton1");
+        borrarjButton.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
+        borrarjButton.setText("Borrar");
         borradojPanel.add(borrarjButton);
 
         borrarjPanel.add(borradojPanel);
 
         estadoBorradojPanel.setLayout(new java.awt.GridBagLayout());
-
-        estadoBorrarjLabel.setText("jLabel1");
         estadoBorradojPanel.add(estadoBorrarjLabel, new java.awt.GridBagConstraints());
 
         borrarjPanel.add(estadoBorradojPanel);
 
         cuerpojPanel.add(borrarjPanel);
-
-        titulojPanel.setLayout(new java.awt.GridBagLayout());
-
-        titulojLabel.setText("jLabel1");
-        titulojPanel.add(titulojLabel, new java.awt.GridBagConstraints());
-
-        cuerpojPanel.add(titulojPanel);
 
         mainjPanel1.add(cuerpojPanel, java.awt.BorderLayout.CENTER);
 
@@ -102,11 +105,11 @@ public class ajustesPanelGui extends javax.swing.JDialog {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainjPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 648, Short.MAX_VALUE)
+            .addComponent(mainjPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainjPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(mainjPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
         );
 
         pack();

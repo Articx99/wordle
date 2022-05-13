@@ -15,6 +15,7 @@ public interface IMotores {
     public boolean checkPalabra(String string);
 
     public String obtenerPalabraAleatoria();
+    public void createFile(File file);
     
     
 }
