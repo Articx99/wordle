@@ -6,6 +6,7 @@
 package org.daw1.Jorge.wordle;
 
 import java.io.File;
+import java.util.Set;
 
 /**
  *
@@ -15,7 +16,10 @@ public interface IMotores {
     public boolean checkPalabra(String string);
 
     public String obtenerPalabraAleatoria();
+    
     public void createFile(File file);
+    
+     public Set<String> cargarFichero(File file);
     
     
 }

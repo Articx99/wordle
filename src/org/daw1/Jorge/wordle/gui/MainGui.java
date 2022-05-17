@@ -5,18 +5,13 @@
 package org.daw1.Jorge.wordle.gui;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JLabel;
-import org.daw1.Jorge.wordle.motores.MotorTest;
 
 /**
  *
@@ -45,7 +40,7 @@ public final class MainGui extends javax.swing.JFrame {
     public MainGui() {       
         initComponents();        
         inicializarLabesl();
-        //checkLenguaje();
+       
         
         
     }
@@ -135,6 +130,34 @@ public final class MainGui extends javax.swing.JFrame {
         }
                
     }
+    
+    public final void nuevaPartida(){
+        limpiarLabels();
+        contadorFila = 0;
+        palabrasEncontradas.put(palabraRed, new TreeSet<>());
+        palabrasEncontradas.put(palabraGreen, new TreeSet<>());
+        palabrasEncontradas.put(palabraYellow, new TreeSet<>());
+        this.enviarjButton.setEnabled(true);
+        if(this.jRadioButtonMenuItemEspanhol.isSelected() && this.jRadioButtonArchivoTexto.isSelected()){
+            ficheroActual = new File("espanholPalabras.txt");
+            tipoMotor = new org.daw1.Jorge.wordle.motores.MotorFicheroTexto();
+            tipoMotor.createFile(ficheroActual);
+            palabraAleatoria = tipoMotor.obtenerPalabraAleatoria();
+                    
+        }
+        else if(this.jRadioButtonMenuItemEspanhol.isSelected() && this.jRadioButtonTest.isSelected()){  
+            tipoMotor = new org.daw1.Jorge.wordle.motores.MotorTest();
+            palabraAleatoria = tipoMotor.obtenerPalabraAleatoria();
+            
+        }
+        else if(this.jRadioButtonMenuItemiIngles.isSelected()){
+            
+            ficheroActual = new File("inglesPalabras.txt");
+            tipoMotor.createFile(ficheroActual);
+            palabraAleatoria = tipoMotor.obtenerPalabraAleatoria();
+        }
+    }
+    
     public final void limpiarLabels(){
         for(int i = 1; i <= MAX_INTENTOS;i++){
             for(int j = 1;j <= TAMNHO_PALABRA; j++){
@@ -234,7 +257,9 @@ public final class MainGui extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenuArchivo = new javax.swing.JMenu();
         nuevaPartidajMenuItem = new javax.swing.JMenuItem();
+        salirjMenuItem = new javax.swing.JMenuItem();
         jMenuMotores = new javax.swing.JMenu();
+        ajustesMotorjMenuItem = new javax.swing.JMenuItem();
         jRadioButtonTest = new javax.swing.JRadioButtonMenuItem();
         jRadioButtonArchivoTexto = new javax.swing.JRadioButtonMenuItem();
         jRadioButtonBasesDatos = new javax.swing.JRadioButtonMenuItem();
@@ -244,7 +269,11 @@ public final class MainGui extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("JorgeRodriguez");
+        setMinimumSize(new java.awt.Dimension(620, 540));
+        setPreferredSize(new java.awt.Dimension(620, 546));
 
+        MainjPanel.setMinimumSize(new java.awt.Dimension(620, 544));
+        MainjPanel.setPreferredSize(new java.awt.Dimension(500, 472));
         MainjPanel.setLayout(new java.awt.BorderLayout());
 
         ZonaLetrasjPanel.setLayout(new java.awt.GridLayout(6, 5));
@@ -516,9 +545,26 @@ public final class MainGui extends javax.swing.JFrame {
         });
         jMenuArchivo.add(nuevaPartidajMenuItem);
 
+        salirjMenuItem.setText("salir");
+        salirjMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                salirjMenuItemActionPerformed(evt);
+            }
+        });
+        jMenuArchivo.add(salirjMenuItem);
+
         jMenuBar1.add(jMenuArchivo);
 
         jMenuMotores.setText("Motores");
+
+        ajustesMotorjMenuItem.setText("Ajustes motor");
+        ajustesMotorjMenuItem.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        ajustesMotorjMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ajustesMotorjMenuItemActionPerformed(evt);
+            }
+        });
+        jMenuMotores.add(ajustesMotorjMenuItem);
 
         MotoresbuttonGroup.add(jRadioButtonTest);
         jRadioButtonTest.setText("MotorTest");
@@ -579,11 +625,11 @@ public final class MainGui extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(MainjPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 550, Short.MAX_VALUE)
+            .addComponent(MainjPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(MainjPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 534, Short.MAX_VALUE)
+            .addComponent(MainjPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 644, Short.MAX_VALUE)
         );
 
         pack();
@@ -591,18 +637,22 @@ public final class MainGui extends javax.swing.JFrame {
 
     private void enviarjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enviarjButtonActionPerformed
         this.errorjLabel.setText("");
-        if(tipoMotor.checkPalabra(this.palabrajTextField.getText())){
+        if(tipoMotor.checkPalabra(this.palabrajTextField.getText()) && tipoMotor.cargarFichero(ficheroActual).contains(this.palabrajTextField.getText()+"\n")){
             checkCorrect(contadorFila);
         }
+        else if(ficheroActual == null){
+            this.errorjLabel.setText("El fichero no existe");
+        }    
+        else if(!tipoMotor.checkPalabra(this.palabrajTextField.getText())){
+            this.errorjLabel.setText("Error de caracteres");
+        }    
         else{
-            if(ficheroActual == null){
-                this.errorjLabel.setText("El fichero no existe");
-                }
-            else{
-                this.errorjLabel.setText("Error de caracteres");
-            }    
-           
+            this.errorjLabel.setText("La palabra no existe.");
+            
+            
         }
+           
+        
         
         
                 
@@ -625,30 +675,7 @@ public final class MainGui extends javax.swing.JFrame {
     }//GEN-LAST:event_jRadioButtonMenuItemEspanholActionPerformed
 
     private void nuevaPartidajMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nuevaPartidajMenuItemActionPerformed
-        limpiarLabels();
-        contadorFila = 0;
-        palabrasEncontradas.put(palabraRed, new TreeSet<>());
-        palabrasEncontradas.put(palabraGreen, new TreeSet<>());
-        palabrasEncontradas.put(palabraYellow, new TreeSet<>());
-        this.enviarjButton.setEnabled(true);
-        if(this.jRadioButtonMenuItemEspanhol.isSelected() && this.jRadioButtonArchivoTexto.isSelected()){
-            ficheroActual = new File("espanholPalabras.txt");
-            tipoMotor = new org.daw1.Jorge.wordle.motores.MotorFicheroTexto();
-            tipoMotor.createFile(ficheroActual);
-            palabraAleatoria = tipoMotor.obtenerPalabraAleatoria();
-                    
-        }
-        else if(this.jRadioButtonMenuItemEspanhol.isSelected() && this.jRadioButtonTest.isSelected()){  
-            tipoMotor = new org.daw1.Jorge.wordle.motores.MotorTest();
-            palabraAleatoria = tipoMotor.obtenerPalabraAleatoria();
-            
-        }
-        else if(this.jRadioButtonMenuItemiIngles.isSelected()){
-            
-            ficheroActual = new File("inglesPalabras.txt");
-            tipoMotor.createFile(ficheroActual);
-            palabraAleatoria = tipoMotor.obtenerPalabraAleatoria();
-        }
+        nuevaPartida();
         
         
     }//GEN-LAST:event_nuevaPartidajMenuItemActionPerformed
@@ -661,12 +688,25 @@ public final class MainGui extends javax.swing.JFrame {
     }//GEN-LAST:event_jRadioButtonMenuItemiInglesActionPerformed
 
     private void jRadioButtonTestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonTestActionPerformed
-        
+        tipoMotor = new org.daw1.Jorge.wordle.motores.MotorTest();
+        nuevaPartida();
     }//GEN-LAST:event_jRadioButtonTestActionPerformed
 
     private void jRadioButtonArchivoTextoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonArchivoTextoActionPerformed
         tipoMotor = new org.daw1.Jorge.wordle.motores.MotorFicheroTexto();
+        nuevaPartida();
+        
     }//GEN-LAST:event_jRadioButtonArchivoTextoActionPerformed
+
+    private void ajustesMotorjMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ajustesMotorjMenuItemActionPerformed
+        ajustesPanelGui ajustesMotor = new ajustesPanelGui(this,true,this.tipoMotor);
+        
+        ajustesMotor.setVisible(true);
+    }//GEN-LAST:event_ajustesMotorjMenuItemActionPerformed
+
+    private void salirjMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salirjMenuItemActionPerformed
+       System.exit(0);
+    }//GEN-LAST:event_salirjMenuItemActionPerformed
 
     /**
      * @param args the command line arguments
@@ -709,6 +749,7 @@ public final class MainGui extends javax.swing.JFrame {
     private javax.swing.JPanel MainjPanel;
     private javax.swing.ButtonGroup MotoresbuttonGroup;
     private javax.swing.JPanel ZonaLetrasjPanel;
+    private javax.swing.JMenuItem ajustesMotorjMenuItem;
     private javax.swing.JLabel bienjLabel;
     private javax.swing.JPanel bienjPanel3;
     private javax.swing.JButton enviarjButton;
@@ -763,5 +804,6 @@ public final class MainGui extends javax.swing.JFrame {
     private javax.swing.JPanel maljPanel;
     private javax.swing.JMenuItem nuevaPartidajMenuItem;
     private javax.swing.JTextField palabrajTextField;
+    private javax.swing.JMenuItem salirjMenuItem;
     // End of variables declaration//GEN-END:variables
 }

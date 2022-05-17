@@ -6,6 +6,7 @@
 package org.daw1.Jorge.wordle.motores;
 
 import java.io.File;
+import java.util.Set;
 import org.daw1.Jorge.wordle.IMotores;
 
 /**
@@ -32,5 +33,12 @@ public class MotorTest implements IMotores{
     public void createFile(File file) {
          //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public Set<String> cargarFichero(File file) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    
     
 }

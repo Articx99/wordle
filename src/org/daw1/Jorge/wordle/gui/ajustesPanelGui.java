@@ -5,17 +5,22 @@
  */
 package org.daw1.Jorge.wordle.gui;
 
+import org.daw1.Jorge.wordle.IMotores;
+
 /**
  *
  * @author alumno
  */
 public class ajustesPanelGui extends javax.swing.JDialog {
-
+    private static final java.awt.Color COLOR_VERDE = new java.awt.Color(51,102,0);
+    private static final java.awt.Color COLOR_ROJO = new java.awt.Color(204,0,0);
+    private final IMotores tipoMotor;
     /**
      * Creates new form ajustesPanelGui
      */
-    public ajustesPanelGui(java.awt.Frame parent, boolean modal) {
+    public ajustesPanelGui(java.awt.Frame parent, boolean modal, IMotores tipoMotor) {
         super(parent, modal);
+        this.tipoMotor = tipoMotor;
         initComponents();
     }
 
@@ -46,7 +51,6 @@ public class ajustesPanelGui extends javax.swing.JDialog {
         estadoBorrarjLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(400, 300));
 
         mainjPanel1.setLayout(new java.awt.BorderLayout(1, 1));
 
@@ -61,7 +65,7 @@ public class ajustesPanelGui extends javax.swing.JDialog {
 
         cuerpojPanel.setLayout(new java.awt.GridLayout(2, 0, 0, 1));
 
-        anadirjPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 0, 12))); // NOI18N
+        anadirjPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Añadir palabra", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 1, 14))); // NOI18N
         anadirjPanel.setLayout(new java.awt.GridLayout(2, 0, 0, 1));
 
         anadirjTextField.setPreferredSize(new java.awt.Dimension(160, 23));
@@ -80,7 +84,7 @@ public class ajustesPanelGui extends javax.swing.JDialog {
 
         cuerpojPanel.add(anadirjPanel);
 
-        borrarjPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 0, 12))); // NOI18N
+        borrarjPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Borrar palabra", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 1, 14))); // NOI18N
         borrarjPanel.setLayout(new java.awt.GridLayout(2, 0, 0, 1));
 
         borrarjTextField.setPreferredSize(new java.awt.Dimension(160, 23));
@@ -143,18 +147,7 @@ public class ajustesPanelGui extends javax.swing.JDialog {
         //</editor-fold>
 
         /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                ajustesPanelGui dialog = new ajustesPanelGui(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

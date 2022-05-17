@@ -8,6 +8,7 @@ package org.daw1.Jorge.wordle.motores;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -37,14 +38,9 @@ public class MotorFicheroTexto implements IMotores{
     @Override
     public String obtenerPalabraAleatoria(){
         String alPalabra = "";
-        try {            
-            Set<String> al = cargarFichero(fileActual);
-            String[] palabras = al.toArray(new String[al.size()]);
-            alPalabra = palabras[randomNumber(palabras.length)];
-            
-        } catch (IOException ex) {
-            Logger.getLogger(MotorFicheroTexto.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        Set<String> al = cargarFichero(fileActual);
+        String[] palabras = al.toArray(new String[al.size()]);
+        alPalabra = palabras[randomNumber(palabras.length)];
         return alPalabra;
     }
     
@@ -54,7 +50,8 @@ public class MotorFicheroTexto implements IMotores{
         return numAl;
     }
     
-    public Set<String> cargarFichero(File file) throws IOException{
+    @Override
+    public Set<String> cargarFichero(File file){
         Set<String> sb = new HashSet<>();
         if(file != null && file.exists() && file.canRead()){
             
@@ -65,11 +62,14 @@ public class MotorFicheroTexto implements IMotores{
                     linea = br.readLine();
                 }
                 return sb;
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(MotorFicheroTexto.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(MotorFicheroTexto.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        else{
-            return sb;
-        }
+        
+        return sb;
     }
     public boolean existeFichero(File file){
         return file.exists();
