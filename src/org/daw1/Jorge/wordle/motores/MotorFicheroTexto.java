@@ -16,6 +16,8 @@ import java.io.Writer;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.TreeSet;
@@ -29,16 +31,16 @@ import org.daw1.Jorge.wordle.io.GestionAlmacenamiento;
  * @author alumno
  */
 public class MotorFicheroTexto implements IMotores{
-    File fileActual = null;
+    File ficheroActual = null;
     @Override
     public boolean checkPalabra(String palabra){
         
-        return palabra.matches("[A-Za-z]{5}") && existeFichero(fileActual);
+        return palabra.matches("[A-Za-z]{5}") && existeFichero(ficheroActual);
     }
     @Override
     public String obtenerPalabraAleatoria(){
         String alPalabra = "";
-        Set<String> al = cargarFichero(fileActual);
+        Set<String> al = cargarFichero(ficheroActual);
         String[] palabras = al.toArray(new String[al.size()]);
         alPalabra = palabras[randomNumber(palabras.length)];
         return alPalabra;
@@ -58,7 +60,7 @@ public class MotorFicheroTexto implements IMotores{
             try (BufferedReader br = new BufferedReader(new FileReader(file))){
                 String linea = br.readLine();
                 while(linea != null){
-                    sb.add(linea+"\n"); 
+                    sb.add(linea); 
                     linea = br.readLine();
                 }
                 return sb;
@@ -76,23 +78,24 @@ public class MotorFicheroTexto implements IMotores{
     }
     @Override
     public void createFile(File file){
-        fileActual = file;
+        ficheroActual = file;
         if(!file.exists()){
             try {
                 file.createNewFile();
+                String[] palabrasTest = {"pablo","samue","jorge","juana"};
                 
-                guardarTexto(file);
+                guardarTexto(file,Arrays.asList(palabrasTest));
                 
             } catch (IOException ex) {
                 Logger.getLogger(MotorFicheroTexto.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
-    public boolean guardarTexto(File file) throws IOException{
+    public boolean guardarTexto(File file,List<String> palabras) throws IOException{
         if((file.exists() && file.canWrite()) || (!file.exists() && file.getParentFile().canWrite())){
             try(Writer wr = new BufferedWriter(new FileWriter(file))){
-                String[] palabrasTest = {"pablo","samue","jorge","juana"};
-                Set<String> s = new HashSet<>(Arrays.asList(palabrasTest));                
+                
+                Set<String> s = new HashSet<>(palabras);                
                 Iterator it = s.iterator();         
                 while(it.hasNext()){               
                     wr.write(it.next().toString()+"\n");
@@ -106,6 +109,37 @@ public class MotorFicheroTexto implements IMotores{
         }
             
         
+    }
+
+    @Override
+    public boolean addPalabra(String palabra) {
+        List<String> a = new LinkedList<>();
+        a.addAll(cargarFichero(ficheroActual));
+        if(!a.contains(palabra)){
+            try {
+                a.add(palabra);
+                guardarTexto(ficheroActual,a);
+                return true;
+            } catch (IOException ex) {
+                Logger.getLogger(MotorFicheroTexto.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return false;
+    }
+    @Override
+    public boolean removePalabra(String palabra) {
+        List<String> a = new LinkedList<>();
+        a.addAll(cargarFichero(ficheroActual));
+        if(a.contains(palabra)){
+            try {
+                a.remove(palabra);
+                guardarTexto(ficheroActual,a);
+                return true;
+            } catch (IOException ex) {
+                Logger.getLogger(MotorFicheroTexto.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return false;
     }
     
    

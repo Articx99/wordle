@@ -19,7 +19,11 @@ public interface IMotores {
     
     public void createFile(File file);
     
-     public Set<String> cargarFichero(File file);
+    public Set<String> cargarFichero(File file);
+     
+    public boolean  addPalabra(String palabra); 
+    
+    public boolean removePalabra(String palabra);
     
     
 }

@@ -17,9 +17,13 @@ public class MotorTest implements IMotores{
 
     public MotorTest() {
     }
+
+    @Override
+    public boolean removePalabra(String palabra) {
+        return true; //To change body of generated methods, choose Tools | Templates.
+    }
     
-    
-    
+ 
     @Override
     public boolean  checkPalabra(String palabra){
         return palabra.matches("[A-Z-a-z]{5}");
@@ -36,7 +40,12 @@ public class MotorTest implements IMotores{
 
     @Override
     public Set<String> cargarFichero(File file) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return null; //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean addPalabra(String palabra) {
+        return true; //To change body of generated methods, choose Tools | Templates.
     }
     
     

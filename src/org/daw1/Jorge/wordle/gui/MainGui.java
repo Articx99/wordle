@@ -637,18 +637,31 @@ public final class MainGui extends javax.swing.JFrame {
 
     private void enviarjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enviarjButtonActionPerformed
         this.errorjLabel.setText("");
-        if(tipoMotor.checkPalabra(this.palabrajTextField.getText()) && tipoMotor.cargarFichero(ficheroActual).contains(this.palabrajTextField.getText()+"\n")){
-            checkCorrect(contadorFila);
+        if(this.jRadioButtonArchivoTexto.isSelected()){
+            if(tipoMotor.checkPalabra(this.palabrajTextField.getText()) && tipoMotor.cargarFichero(ficheroActual).contains(this.palabrajTextField.getText())){
+                checkCorrect(contadorFila);
+            }
+            else if(ficheroActual == null){
+                this.errorjLabel.setText("El fichero no existe");
+            }    
+            else if(!tipoMotor.checkPalabra(this.palabrajTextField.getText())){
+                this.errorjLabel.setText("Error de caracteres");
+            }    
+            else{
+                this.errorjLabel.setText("La palabra no existe.");
+
+
+            }
         }
-        else if(ficheroActual == null){
-            this.errorjLabel.setText("El fichero no existe");
-        }    
-        else if(!tipoMotor.checkPalabra(this.palabrajTextField.getText())){
-            this.errorjLabel.setText("Error de caracteres");
-        }    
-        else{
-            this.errorjLabel.setText("La palabra no existe.");
-            
+        else if(this.jRadioButtonTest.isSelected()){
+            if(tipoMotor.checkPalabra(this.palabrajTextField.getText())){
+                checkCorrect(contadorFila);
+            }
+            else{
+                this.errorjLabel.setText("Error de caracteres");
+            }
+        }
+        else if(this.jRadioButtonBasesDatos.isSelected()){
             
         }
            
@@ -699,7 +712,7 @@ public final class MainGui extends javax.swing.JFrame {
     }//GEN-LAST:event_jRadioButtonArchivoTextoActionPerformed
 
     private void ajustesMotorjMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ajustesMotorjMenuItemActionPerformed
-        ajustesPanelGui ajustesMotor = new ajustesPanelGui(this,true,this.tipoMotor);
+        ajustesPanelGui ajustesMotor = new ajustesPanelGui(this,true,this.tipoMotor,this.ficheroActual);
         
         ajustesMotor.setVisible(true);
     }//GEN-LAST:event_ajustesMotorjMenuItemActionPerformed

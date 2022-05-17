@@ -5,7 +5,12 @@
  */
 package org.daw1.Jorge.wordle.gui;
 
+import java.io.File;
+import java.util.Arrays;
 import org.daw1.Jorge.wordle.IMotores;
+import org.daw1.Jorge.wordle.motores.MotorBasesDatos;
+import org.daw1.Jorge.wordle.motores.MotorFicheroTexto;
+import org.daw1.Jorge.wordle.motores.MotorTest;
 
 /**
  *
@@ -15,11 +20,17 @@ public class ajustesPanelGui extends javax.swing.JDialog {
     private static final java.awt.Color COLOR_VERDE = new java.awt.Color(51,102,0);
     private static final java.awt.Color COLOR_ROJO = new java.awt.Color(204,0,0);
     private final IMotores tipoMotor;
+    private final File ficheroActual;
     /**
      * Creates new form ajustesPanelGui
+     * @param parent
+     * @param modal
+     * @param tipoMotor
+     * @param ficheroActual
      */
-    public ajustesPanelGui(java.awt.Frame parent, boolean modal, IMotores tipoMotor) {
+    public ajustesPanelGui(java.awt.Frame parent, boolean modal, IMotores tipoMotor, File ficheroActual) {
         super(parent, modal);
+        this.ficheroActual = ficheroActual;
         this.tipoMotor = tipoMotor;
         initComponents();
     }
@@ -73,6 +84,11 @@ public class ajustesPanelGui extends javax.swing.JDialog {
 
         anadirjButton.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
         anadirjButton.setText("Añadir");
+        anadirjButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                anadirjButtonActionPerformed(evt);
+            }
+        });
         insertarjPanel.add(anadirjButton);
 
         anadirjPanel.add(insertarjPanel);
@@ -92,6 +108,11 @@ public class ajustesPanelGui extends javax.swing.JDialog {
 
         borrarjButton.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
         borrarjButton.setText("Borrar");
+        borrarjButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                borrarjButtonActionPerformed(evt);
+            }
+        });
         borradojPanel.add(borrarjButton);
 
         borrarjPanel.add(borradojPanel);
@@ -118,6 +139,87 @@ public class ajustesPanelGui extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    
+    
+    
+    
+    private void anadirjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_anadirjButtonActionPerformed
+        if(tipoMotor.getClass() == MotorFicheroTexto.class){
+            if(tipoMotor.checkPalabra(this.anadirjTextField.getText()) && !tipoMotor.cargarFichero(ficheroActual).contains(this.anadirjTextField.getText())){
+                this.estadoInsertarjLabel.setText("Se ha insertado correctamente.");
+                this.estadoInsertarjLabel.setForeground(COLOR_VERDE);
+                tipoMotor.addPalabra(this.anadirjTextField.getText());
+                System.out.println(Arrays.toString(tipoMotor.cargarFichero(ficheroActual).toArray()));
+            }
+            else if(ficheroActual == null){
+                this.estadoInsertarjLabel.setText("El fichero no existe");
+                this.estadoInsertarjLabel.setForeground(COLOR_ROJO);
+            }    
+            else if(!tipoMotor.checkPalabra(this.anadirjTextField.getText())){
+                
+                this.estadoInsertarjLabel.setText("Error de caracteres");
+                this.estadoInsertarjLabel.setForeground(COLOR_ROJO);
+            }    
+            else{
+                this.estadoInsertarjLabel.setText("La palabra existe.");
+                this.estadoInsertarjLabel.setForeground(COLOR_ROJO);
+
+
+            }
+        }
+        else if(tipoMotor.getClass() == MotorTest.class){
+            if(tipoMotor.checkPalabra(this.anadirjTextField.getText())){
+                this.estadoInsertarjLabel.setText("Se ha insertado correctamente.");
+                this.estadoInsertarjLabel.setForeground(COLOR_VERDE);
+            }
+            else{
+                this.estadoInsertarjLabel.setText("Error de caracteres");
+                this.estadoInsertarjLabel.setForeground(COLOR_ROJO);
+            }
+        }
+        else if(tipoMotor.getClass() == MotorBasesDatos.class){
+            
+        }
+    }//GEN-LAST:event_anadirjButtonActionPerformed
+
+    private void borrarjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_borrarjButtonActionPerformed
+        if(tipoMotor.getClass() == MotorFicheroTexto.class){
+            if(tipoMotor.checkPalabra(this.borrarjTextField.getText()) && tipoMotor.cargarFichero(ficheroActual).contains(this.borrarjTextField.getText())){
+                this.estadoBorrarjLabel.setText("Se ha borrado correctamente.");
+                this.estadoBorrarjLabel.setForeground(COLOR_VERDE);
+                tipoMotor.removePalabra(this.borrarjTextField.getText());
+                System.out.println(Arrays.toString(tipoMotor.cargarFichero(ficheroActual).toArray()));
+            }
+            else if(ficheroActual == null){
+                this.estadoBorrarjLabel.setText("El fichero no existe");
+                this.estadoBorrarjLabel.setForeground(COLOR_ROJO);
+            }    
+            else if(!tipoMotor.checkPalabra(this.borrarjTextField.getText())){
+                
+                this.estadoBorrarjLabel.setText("Error de caracteres");
+                this.estadoBorrarjLabel.setForeground(COLOR_ROJO);
+            }    
+            else{
+                this.estadoBorrarjLabel.setText("La palabra no existe.");
+
+
+            }
+        }
+        else if(tipoMotor.getClass() == MotorTest.class){
+            if(tipoMotor.checkPalabra(this.borrarjTextField.getText())){
+                this.estadoBorrarjLabel.setText("Se ha borrado correctamente.");
+                this.estadoBorrarjLabel.setForeground(COLOR_VERDE);
+            }
+            else{
+                this.estadoBorrarjLabel.setText("Error de caracteres");
+                this.estadoBorrarjLabel.setForeground(COLOR_ROJO);
+            }
+        }
+        else if(tipoMotor.getClass() == MotorBasesDatos.class){
+            
+        }
+    }//GEN-LAST:event_borrarjButtonActionPerformed
 
     /**
      * @param args the command line arguments
