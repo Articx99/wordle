@@ -20,11 +20,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.daw1.Jorge.wordle.IMotores;
-import org.daw1.Jorge.wordle.io.GestionAlmacenamiento;
+
 
 /**
  *
@@ -38,11 +37,10 @@ public class MotorFicheroTexto implements IMotores{
         return palabra.matches("[A-Za-z]{5}") && existeFichero(ficheroActual);
     }
     @Override
-    public String obtenerPalabraAleatoria(){
-        String alPalabra = "";
+    public String obtenerPalabraAleatoria(){        
         Set<String> al = cargarFichero(ficheroActual);
         String[] palabras = al.toArray(new String[al.size()]);
-        alPalabra = palabras[randomNumber(palabras.length)];
+        String alPalabra = palabras[randomNumber(palabras.length)];
         return alPalabra;
     }
     
