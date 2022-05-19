@@ -80,7 +80,7 @@ public class MotorFicheroTexto implements IMotores{
         if(!file.exists()){
             try {
                 file.createNewFile();
-                String[] palabrasTest = {"pablo","samue","jorge","juana"};
+                String[] palabrasTest = {"pablo","samue","jorge","juana","holas","casas","ramar"};
                 
                 guardarTexto(file,Arrays.asList(palabrasTest));
                 

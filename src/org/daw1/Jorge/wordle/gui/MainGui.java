@@ -30,6 +30,7 @@ public final class MainGui extends javax.swing.JFrame {
     private String palabraAleatoria = null;
     private File ficheroActual = null;
     private final Map<String,Set<Character>> palabrasEncontradas = new HashMap<>();
+    private final Map<Character,Integer> cantidadLetras = new HashMap<>();
     
        
     private org.daw1.Jorge.wordle.IMotores tipoMotor = null;
@@ -61,13 +62,13 @@ public final class MainGui extends javax.swing.JFrame {
     String palabraGreen = "GREEN";
     String palabraYellow = "YELLOW";
     public void checkCorrect(int x){
-                
+        contadorFila++;        
         palabraAleatoria = palabraAleatoria.toUpperCase();
         JLabel[][] label = labels;    
         String text = this.palabrajTextField.getText().toUpperCase();
         char[] lAleatoria = palabraAleatoria.toCharArray();
         char[] lInput = text.toCharArray();
-        if(x < label.length){
+        if(contadorFila < MAX_INTENTOS){
                                                             
             int n = 0;
             for(int i = 0; i < text.length();i++){
@@ -76,19 +77,24 @@ public final class MainGui extends javax.swing.JFrame {
                     label[x][i].setText(Character.toString(lInput[i]));                            
                     label[x][i].setForeground(COLOR_VERDE);
                     palabrasEncontradas.get(palabraGreen).add(lInput[i]);
+                    palabrasEncontradas.get(palabraYellow).remove(lInput[i]);
                     n++;
                 }
                 else if(palabraAleatoria.contains(lInput[i]+"")){
                     label[x][i].setVisible(true);                   
                     label[x][i].setText(Character.toString(lInput[i]));
+                    
+                    
                     if(palabrasEncontradas.get(palabraGreen).contains(lInput[i])){
                         label[x][i].setForeground(COLOR_BLACK);
-                          
-                    }
+                        }
                     else{
                         label[x][i].setForeground(COLOR_AMARILLO);
                         palabrasEncontradas.get(palabraYellow).add(lInput[i]);
                     }
+                          
+                    
+                    
                       
                 }
                 else{
@@ -99,10 +105,17 @@ public final class MainGui extends javax.swing.JFrame {
             }
             
                 if(n == 5){
+                    if((this.contadorFila+1) == 1){
+                        this.finaljLabel.setText("Has Ganado en "+(this.contadorFila+1)+" intento!!!");
+                         this.finaljLabel.setForeground(COLOR_VERDE);
+                        this.enviarjButton.setEnabled(false);
+                    }
+                    else{
+                        this.finaljLabel.setText("Has Ganado en "+(this.contadorFila+1)+" intentos!!!");
+                        this.finaljLabel.setForeground(COLOR_VERDE);
+                        this.enviarjButton.setEnabled(false);
+                    }
                     
-                    this.finaljLabel.setText("Has Ganado!!!");
-                    this.finaljLabel.setForeground(COLOR_VERDE);
-                    this.enviarjButton.setEnabled(false);
                 }
             }
             StringBuilder sb = new StringBuilder();
@@ -120,14 +133,14 @@ public final class MainGui extends javax.swing.JFrame {
             sb.replace(0,1, "");
             sb.replace(sb.length()-1,sb.length(), "");
             this.existenjLabel.setText(sb.toString());
-            contadorFila++;
-           
+            
+            if(contadorFila == MAX_INTENTOS -1){
+                this.enviarjButton.setEnabled(false);
+                this.finaljLabel.setText("Has perdido!!!");
+                this.finaljLabel.setForeground(COLOR_ROJO);
+            }
         }
-        else{
-            this.finaljLabel.setText("Has perdido!!!");
-            this.finaljLabel.setForeground(COLOR_ROJO);
-            this.enviarjButton.setEnabled(false);
-        }
+        
                
     }
     
@@ -137,6 +150,7 @@ public final class MainGui extends javax.swing.JFrame {
         palabrasEncontradas.put(palabraRed, new TreeSet<>());
         palabrasEncontradas.put(palabraGreen, new TreeSet<>());
         palabrasEncontradas.put(palabraYellow, new TreeSet<>());
+        
         this.enviarjButton.setEnabled(true);
         if(this.jRadioButtonMenuItemEspanhol.isSelected() && this.jRadioButtonArchivoTexto.isSelected()){
             ficheroActual = new File("espanholPalabras.txt");
@@ -640,6 +654,7 @@ public final class MainGui extends javax.swing.JFrame {
         if(this.jRadioButtonArchivoTexto.isSelected()){
             if(tipoMotor.checkPalabra(this.palabrajTextField.getText()) && tipoMotor.cargarFichero(ficheroActual).contains(this.palabrajTextField.getText())){
                 checkCorrect(contadorFila);
+                
             }
             else if(ficheroActual == null){
                 this.errorjLabel.setText("El fichero no existe");
@@ -656,12 +671,14 @@ public final class MainGui extends javax.swing.JFrame {
         else if(this.jRadioButtonTest.isSelected()){
             if(tipoMotor.checkPalabra(this.palabrajTextField.getText())){
                 checkCorrect(contadorFila);
+                
             }
             else{
                 this.errorjLabel.setText("Error de caracteres");
             }
         }
         else if(this.jRadioButtonBasesDatos.isSelected()){
+            
             
         }
            
