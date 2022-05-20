@@ -25,12 +25,15 @@ public final class MainGui extends javax.swing.JFrame {
     private static final java.awt.Color COLOR_BLACK = new java.awt.Color(0,0,0);
     private static final int MAX_INTENTOS = 6;
     private static final int TAMNHO_PALABRA = 5;
+    private static final File espanhol = new File("./data/españonPalabras");
+    private static final File ingles = new File("./data/inglesPalabras");
+    private static final File baseDeDatos = new File("./data/dbwordle.db");
     private final javax.swing.JLabel[][] labels = new javax.swing.JLabel[MAX_INTENTOS][TAMNHO_PALABRA];
     private int contadorFila = 0;
     private String palabraAleatoria = null;
     private File ficheroActual = null;
     private final Map<String,Set<Character>> palabrasEncontradas = new HashMap<>();
-    private final Map<Character,Integer> cantidadLetras = new HashMap<>();
+   
     
        
     private org.daw1.Jorge.wordle.IMotores tipoMotor = null;
@@ -106,12 +109,12 @@ public final class MainGui extends javax.swing.JFrame {
             
                 if(n == 5){
                     if((this.contadorFila+1) == 1){
-                        this.finaljLabel.setText("Has Ganado en "+(this.contadorFila+1)+" intento!!!");
+                        this.finaljLabel.setText("Has Ganado en "+(this.contadorFila)+" intento!!!");
                          this.finaljLabel.setForeground(COLOR_VERDE);
                         this.enviarjButton.setEnabled(false);
                     }
                     else{
-                        this.finaljLabel.setText("Has Ganado en "+(this.contadorFila+1)+" intentos!!!");
+                        this.finaljLabel.setText("Has Ganado en "+(this.contadorFila)+" intentos!!!");
                         this.finaljLabel.setForeground(COLOR_VERDE);
                         this.enviarjButton.setEnabled(false);
                     }
@@ -134,7 +137,7 @@ public final class MainGui extends javax.swing.JFrame {
             sb.replace(sb.length()-1,sb.length(), "");
             this.existenjLabel.setText(sb.toString());
             
-            if(contadorFila == MAX_INTENTOS -1){
+            if(contadorFila == MAX_INTENTOS -1 && n != 5){
                 this.enviarjButton.setEnabled(false);
                 this.finaljLabel.setText("Has perdido!!!");
                 this.finaljLabel.setForeground(COLOR_ROJO);
@@ -145,15 +148,21 @@ public final class MainGui extends javax.swing.JFrame {
     }
     
     public final void nuevaPartida(){
+        String idioma = "";
         limpiarLabels();
         contadorFila = 0;
         palabrasEncontradas.put(palabraRed, new TreeSet<>());
         palabrasEncontradas.put(palabraGreen, new TreeSet<>());
         palabrasEncontradas.put(palabraYellow, new TreeSet<>());
-        
+        if(this.jRadioButtonMenuItemEspanhol.isSelected()){
+            idioma = "es";
+        }
+        else{
+            idioma = "gl";
+        }
         this.enviarjButton.setEnabled(true);
         if(this.jRadioButtonMenuItemEspanhol.isSelected() && this.jRadioButtonArchivoTexto.isSelected()){
-            ficheroActual = new File("espanholPalabras.txt");
+            ficheroActual = espanhol;
             tipoMotor = new org.daw1.Jorge.wordle.motores.MotorFicheroTexto();
             tipoMotor.createFile(ficheroActual);
             palabraAleatoria = tipoMotor.obtenerPalabraAleatoria();
@@ -164,10 +173,18 @@ public final class MainGui extends javax.swing.JFrame {
             palabraAleatoria = tipoMotor.obtenerPalabraAleatoria();
             
         }
-        else if(this.jRadioButtonMenuItemiIngles.isSelected()){
-            
-            ficheroActual = new File("inglesPalabras.txt");
+        else if(this.jRadioButtonMenuItemGal.isSelected() && this.jRadioButtonTest.isSelected()){
+            tipoMotor = new org.daw1.Jorge.wordle.motores.MotorTest();    
+            palabraAleatoria = tipoMotor.obtenerPalabraAleatoria();
+        }
+        else if(this.jRadioButtonMenuItemGal.isSelected() && this.jRadioButtonArchivoTexto.isSelected()){
+            tipoMotor = new org.daw1.Jorge.wordle.motores.MotorFicheroTexto();
+            ficheroActual = ingles;
             tipoMotor.createFile(ficheroActual);
+        }
+        else if(this.jRadioButtonMenuItemEspanhol.isSelected() || this.jRadioButtonMenuItemGal.isSelected()  && this.jRadioButtonBasesDatos.isSelected()){
+            tipoMotor = new org.daw1.Jorge.wordle.motores.MotorBasesDatos(idioma);
+            ficheroActual = baseDeDatos;   
             palabraAleatoria = tipoMotor.obtenerPalabraAleatoria();
         }
     }
@@ -204,6 +221,10 @@ public final class MainGui extends javax.swing.JFrame {
                 label.setVisible(false);
                 
             }
+        }
+        File ruta = new File("./data/");
+        if(!ruta.isDirectory()){
+            ruta.mkdir();
         }
         
        
@@ -279,12 +300,11 @@ public final class MainGui extends javax.swing.JFrame {
         jRadioButtonBasesDatos = new javax.swing.JRadioButtonMenuItem();
         jMenuIdioma = new javax.swing.JMenu();
         jRadioButtonMenuItemEspanhol = new javax.swing.JRadioButtonMenuItem();
-        jRadioButtonMenuItemiIngles = new javax.swing.JRadioButtonMenuItem();
+        jRadioButtonMenuItemGal = new javax.swing.JRadioButtonMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("JorgeRodriguez");
         setMinimumSize(new java.awt.Dimension(620, 540));
-        setPreferredSize(new java.awt.Dimension(620, 546));
 
         MainjPanel.setMinimumSize(new java.awt.Dimension(620, 544));
         MainjPanel.setPreferredSize(new java.awt.Dimension(500, 472));
@@ -614,7 +634,7 @@ public final class MainGui extends javax.swing.JFrame {
 
         IdiomabuttonGroup.add(jRadioButtonMenuItemEspanhol);
         jRadioButtonMenuItemEspanhol.setSelected(true);
-        jRadioButtonMenuItemEspanhol.setText("espanhol");
+        jRadioButtonMenuItemEspanhol.setText("español");
         jRadioButtonMenuItemEspanhol.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jRadioButtonMenuItemEspanholActionPerformed(evt);
@@ -622,14 +642,14 @@ public final class MainGui extends javax.swing.JFrame {
         });
         jMenuIdioma.add(jRadioButtonMenuItemEspanhol);
 
-        IdiomabuttonGroup.add(jRadioButtonMenuItemiIngles);
-        jRadioButtonMenuItemiIngles.setText("Ingles");
-        jRadioButtonMenuItemiIngles.addActionListener(new java.awt.event.ActionListener() {
+        IdiomabuttonGroup.add(jRadioButtonMenuItemGal);
+        jRadioButtonMenuItemGal.setText("Gallego");
+        jRadioButtonMenuItemGal.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButtonMenuItemiInglesActionPerformed(evt);
+                jRadioButtonMenuItemGalActionPerformed(evt);
             }
         });
-        jMenuIdioma.add(jRadioButtonMenuItemiIngles);
+        jMenuIdioma.add(jRadioButtonMenuItemGal);
 
         jMenuBar1.add(jMenuIdioma);
 
@@ -678,7 +698,17 @@ public final class MainGui extends javax.swing.JFrame {
             }
         }
         else if(this.jRadioButtonBasesDatos.isSelected()){
-            
+            if(tipoMotor.checkPalabra(this.palabrajTextField.getText()) && tipoMotor.cargarFichero().contains(this.palabrajTextField.getText().toUpperCase())){
+                checkCorrect(contadorFila);
+            }   
+            else if(!tipoMotor.checkPalabra(this.palabrajTextField.getText().toUpperCase())){
+                this.errorjLabel.setText("Error de caracteres");
+            }    
+            else{
+                this.errorjLabel.setText("La palabra no existe.");
+
+
+            }
             
         }
            
@@ -689,17 +719,29 @@ public final class MainGui extends javax.swing.JFrame {
     }//GEN-LAST:event_enviarjButtonActionPerformed
 
     private void jRadioButtonBasesDatosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonBasesDatosActionPerformed
-        // TODO add your handling code here:
+        String idioma = "";
+        if(this.jRadioButtonMenuItemEspanhol.isSelected()){
+            idioma = "es";
+        }
+        else{
+            idioma = "gl";
+        }
+        tipoMotor = new org.daw1.Jorge.wordle.motores.MotorBasesDatos(idioma);
+        nuevaPartida();
     }//GEN-LAST:event_jRadioButtonBasesDatosActionPerformed
 
     private void jRadioButtonMenuItemEspanholActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonMenuItemEspanholActionPerformed
         if(this.jRadioButtonMenuItemEspanhol.isSelected() && this.jRadioButtonArchivoTexto.isSelected()){
-            ficheroActual = new File("espanhonPalabras.txt");
+            ficheroActual = espanhol;
             tipoMotor.createFile(ficheroActual);
         }
         else if(this.jRadioButtonMenuItemEspanhol.isSelected() && this.jRadioButtonTest.isSelected()){
-            ficheroActual = new File("espanhonPalabras.txt");
+            ficheroActual = espanhol;
             
+        }
+        else{
+            ficheroActual = baseDeDatos;
+       
         }
         
     }//GEN-LAST:event_jRadioButtonMenuItemEspanholActionPerformed
@@ -710,12 +752,20 @@ public final class MainGui extends javax.swing.JFrame {
         
     }//GEN-LAST:event_nuevaPartidajMenuItemActionPerformed
 
-    private void jRadioButtonMenuItemiInglesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonMenuItemiInglesActionPerformed
-        if(this.jRadioButtonMenuItemEspanhol.isSelected()){
-            ficheroActual = new File("inglesPalabras.txt");
+    private void jRadioButtonMenuItemGalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonMenuItemGalActionPerformed
+        if(this.jRadioButtonMenuItemGal.isSelected() && this.jRadioButtonArchivoTexto.isSelected()){
+            ficheroActual = ingles;
             tipoMotor.createFile(ficheroActual);
         }
-    }//GEN-LAST:event_jRadioButtonMenuItemiInglesActionPerformed
+         else if(this.jRadioButtonMenuItemGal.isSelected() && this.jRadioButtonTest.isSelected()){
+            ficheroActual = ingles;
+            
+        }
+        else{
+            ficheroActual = baseDeDatos;
+            
+        }
+    }//GEN-LAST:event_jRadioButtonMenuItemGalActionPerformed
 
     private void jRadioButtonTestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonTestActionPerformed
         tipoMotor = new org.daw1.Jorge.wordle.motores.MotorTest();
@@ -828,7 +878,7 @@ public final class MainGui extends javax.swing.JFrame {
     private javax.swing.JRadioButtonMenuItem jRadioButtonArchivoTexto;
     private javax.swing.JRadioButtonMenuItem jRadioButtonBasesDatos;
     private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItemEspanhol;
-    private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItemiIngles;
+    private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItemGal;
     private javax.swing.JRadioButtonMenuItem jRadioButtonTest;
     private javax.swing.JLabel maljLabel;
     private javax.swing.JPanel maljPanel;

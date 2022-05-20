@@ -15,6 +15,11 @@ import org.daw1.Jorge.wordle.IMotores;
  */
 public class MotorTest implements IMotores{
 
+    @Override
+    public Set<String> cargarFichero() {
+        return null; //To change body of generated methods, choose Tools | Templates.
+    }
+
     public MotorTest() {
     }
 

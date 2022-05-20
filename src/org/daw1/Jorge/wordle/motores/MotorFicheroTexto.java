@@ -32,10 +32,10 @@ import org.daw1.Jorge.wordle.IMotores;
 public class MotorFicheroTexto implements IMotores{
     File ficheroActual = null;
     @Override
-    public boolean checkPalabra(String palabra){
-        
+    public boolean checkPalabra(String palabra){        
         return palabra.matches("[A-Za-z]{5}") && existeFichero(ficheroActual);
     }
+    
     @Override
     public String obtenerPalabraAleatoria(){        
         Set<String> al = cargarFichero(ficheroActual);
@@ -138,6 +138,11 @@ public class MotorFicheroTexto implements IMotores{
             }
         }
         return false;
+    }
+
+    @Override
+    public Set<String> cargarFichero() {
+        return null; 
     }
     
    

@@ -150,7 +150,7 @@ public class ajustesPanelGui extends javax.swing.JDialog {
                 this.estadoInsertarjLabel.setText("Se ha insertado correctamente.");
                 this.estadoInsertarjLabel.setForeground(COLOR_VERDE);
                 tipoMotor.addPalabra(this.anadirjTextField.getText());
-                System.out.println(Arrays.toString(tipoMotor.cargarFichero(ficheroActual).toArray()));
+                
             }
             else if(ficheroActual == null){
                 this.estadoInsertarjLabel.setText("El fichero no existe");
