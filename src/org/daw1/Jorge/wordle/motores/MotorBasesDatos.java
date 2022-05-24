@@ -48,44 +48,48 @@ public class MotorBasesDatos implements IMotores{
     }
 
     @Override
-    public Set<String> cargarFichero() {
-        Set<String> s = new TreeSet<>();
-        if(idioma.equalsIgnoreCase("es")){
-            try(Connection conn = DriverManager.getConnection(URL);
-                Statement consulta = conn.createStatement();
-
-                ResultSet rs = consulta.executeQuery("SELECT palabra FROM palabras WHERE lang = 'es'")){
-                    while(rs.next()){
-                        s.add(rs.getString("palabra"));
-                    }    
-                } catch (SQLException ex) { 
-                Logger.getLogger(MotorBasesDatos.class.getName()).log(Level.SEVERE, null, ex);
-            } 
+    public boolean existePalabra(String palabra) throws SQLException {
+        try(Connection conn = DriverManager.getConnection(URL);
+                
+            PreparedStatement ps =  conn.prepareStatement("SELECT count(*) as total FROM palabras WHERE lang = ? and palabra=?")){
+            ps.setString(1, idioma);
+            ps.setString(2, palabra);
             
+            try(ResultSet rs = ps.executeQuery()){
+                rs.next();
+                return rs.getInt("total") > 0;
+            }
         }
-        else if(idioma.equalsIgnoreCase("gl")){
-            try(Connection conn = DriverManager.getConnection(URL);
-                Statement consulta = conn.createStatement();
-
-                ResultSet rs = consulta.executeQuery("SELECT palabra FROM palabras WHERE lang = 'gl'")){
-                    while(rs.next()){
-                        s.add(rs.getString("palabra"));
-                    }    
-                } catch (SQLException ex) { 
-                Logger.getLogger(MotorBasesDatos.class.getName()).log(Level.SEVERE, null, ex);
-            } 
-            
+               
+    }
+    
+    @Override
+    public String obtenerPalabraAleatoria() throws SQLException{      
+        String alPalabra = "";
+        int maxLength;
+        
+        try(Connection conn = DriverManager.getConnection(URL);
+                
+            PreparedStatement ps =  conn.prepareStatement("SELECT count(*) as total FROM palabras WHERE lang = ?")){
+            ps.setString(1, idioma);
+            try(ResultSet rs = ps.executeQuery()){
+                rs.next();
+                maxLength = rs.getInt("total");
+            }
+        
         }
         
-        return s;
-    }
-
-    @Override
-    public String obtenerPalabraAleatoria() {
-             
-        Set<String> al = cargarFichero();
-        String[] palabras = al.toArray(new String[al.size()]);
-        String alPalabra = palabras[randomNumber(palabras.length)];
+        try(Connection conn = DriverManager.getConnection(URL);
+               
+            PreparedStatement ps =  conn.prepareStatement("SELECT palabra as p FROM palabras where lang = ? limit ?,1")){
+            ps.setString(1, idioma);
+            ps.setInt(2, randomNumber(maxLength));
+            try(ResultSet rs = ps.executeQuery()){
+                
+                alPalabra = rs.getString("p");
+            }
+        }
+        
         return alPalabra;
     
     }
@@ -96,61 +100,29 @@ public class MotorBasesDatos implements IMotores{
         return numAl;
     }
     
+    
     @Override
-    public boolean addPalabra(String palabra) {
-        palabra = palabra.toUpperCase();
-        if(idioma.equalsIgnoreCase("es") && !cargarFichero().contains(palabra)){
-            try(Connection conn = DriverManager.getConnection(URL);
-                PreparedStatement ps = conn.prepareStatement("INSERT INTO palabras (palabra, lang) VALUES(?, ?)")){
-                ps.setString(1, palabra);
-                ps.setString(2, "es");
-                int insertadas = ps.executeUpdate();
-                return insertadas > 0;
-            } catch (SQLException ex) {
-                Logger.getLogger(MotorBasesDatos.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        else if(idioma.equalsIgnoreCase("gl") && !cargarFichero().contains(palabra)){
-            try(Connection conn = DriverManager.getConnection(URL);
-                PreparedStatement ps = conn.prepareStatement("INSERT INTO palabras (palabra, lang) VALUES(?, ?)")){
-                ps.setString(1, palabra);
-                ps.setString(2, "gl");
-                int insertadas = ps.executeUpdate();
-                return insertadas > 0;
-            } catch (SQLException ex) {
-                Logger.getLogger(MotorBasesDatos.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        return false;
+    public boolean addPalabra(String palabra) throws SQLException{
+        palabra = palabra.toUpperCase();  
+        try(Connection conn = DriverManager.getConnection(URL);
+            PreparedStatement ps = conn.prepareStatement("INSERT INTO palabras (palabra, lang) VALUES(?, ?)")){
+            ps.setString(1, palabra);
+            ps.setString(2, idioma);
+            int insertadas = ps.executeUpdate();
+            return insertadas > 0;
+        }            
     }
 
     @Override
-    public boolean removePalabra(String palabra) {
-        palabra = palabra.toUpperCase();
-        if(idioma.equalsIgnoreCase("es") && cargarFichero().contains(palabra)){
-            try(Connection conn = DriverManager.getConnection(URL);
-                PreparedStatement ps = conn.prepareStatement("DELETE FROM palabras WHERE palabra=? AND lang=?;")){
-                ps.setString(1, palabra);
-                ps.setString(2, "es");
-                int insertadas = ps.executeUpdate();
-                return insertadas > 0;
-            } catch (SQLException ex) {
-                Logger.getLogger(MotorBasesDatos.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        else if(idioma.equalsIgnoreCase("gl") && cargarFichero().contains(palabra)){
-            try(Connection conn = DriverManager.getConnection(URL);
-                PreparedStatement ps = conn.prepareStatement("DELETE FROM palabras WHERE palabra=? AND lang=?")){
-                ps.setString(1, palabra);
-                ps.setString(2, "gl");
-                int insertadas = ps.executeUpdate();
-                return insertadas > 0;
-            } catch (SQLException ex) {
-                Logger.getLogger(MotorBasesDatos.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        
-        return false;
+    public boolean removePalabra(String palabra)throws SQLException {
+        palabra = palabra.toUpperCase();   
+        try(Connection conn = DriverManager.getConnection(URL);
+            PreparedStatement ps = conn.prepareStatement("DELETE FROM palabras WHERE palabra=? AND lang=?;")){
+            ps.setString(1, palabra);
+            ps.setString(2, idioma);
+            int insertadas = ps.executeUpdate();
+            return insertadas > 0;
+        } 
     }
 
    

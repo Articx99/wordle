@@ -6,6 +6,7 @@
 package org.daw1.Jorge.wordle.motores;
 
 import java.io.File;
+import java.sql.SQLException;
 import java.util.Set;
 import org.daw1.Jorge.wordle.IMotores;
 
@@ -16,9 +17,11 @@ import org.daw1.Jorge.wordle.IMotores;
 public class MotorTest implements IMotores{
 
     @Override
-    public Set<String> cargarFichero() {
-        return null; //To change body of generated methods, choose Tools | Templates.
+    public boolean existePalabra(String palabra) throws SQLException {
+        return false; //To change body of generated methods, choose Tools | Templates.
     }
+
+    
 
     public MotorTest() {
     }

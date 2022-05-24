@@ -6,7 +6,12 @@
 package org.daw1.Jorge.wordle.gui;
 
 import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import org.daw1.Jorge.wordle.IMotores;
 import org.daw1.Jorge.wordle.motores.MotorBasesDatos;
 import org.daw1.Jorge.wordle.motores.MotorFicheroTexto;
@@ -146,26 +151,34 @@ public class ajustesPanelGui extends javax.swing.JDialog {
     
     private void anadirjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_anadirjButtonActionPerformed
         if(tipoMotor.getClass() == MotorFicheroTexto.class){
-            if(tipoMotor.checkPalabra(this.anadirjTextField.getText()) && !tipoMotor.cargarFichero(ficheroActual).contains(this.anadirjTextField.getText())){
-                this.estadoInsertarjLabel.setText("Se ha insertado correctamente.");
-                this.estadoInsertarjLabel.setForeground(COLOR_VERDE);
-                tipoMotor.addPalabra(this.anadirjTextField.getText());
-                
-            }
-            else if(ficheroActual == null){
-                this.estadoInsertarjLabel.setText("El fichero no existe");
-                this.estadoInsertarjLabel.setForeground(COLOR_ROJO);
-            }    
-            else if(!tipoMotor.checkPalabra(this.anadirjTextField.getText())){
-                
-                this.estadoInsertarjLabel.setText("Error de caracteres");
-                this.estadoInsertarjLabel.setForeground(COLOR_ROJO);
-            }    
-            else{
-                this.estadoInsertarjLabel.setText("La palabra existe.");
-                this.estadoInsertarjLabel.setForeground(COLOR_ROJO);
-
-
+            try {
+                if(tipoMotor.checkPalabra(this.anadirjTextField.getText()) && !tipoMotor.cargarFichero(ficheroActual).contains(this.anadirjTextField.getText())){
+                    this.estadoInsertarjLabel.setText("Se ha insertado correctamente.");
+                    this.estadoInsertarjLabel.setForeground(COLOR_VERDE);
+                    try {
+                        tipoMotor.addPalabra(this.anadirjTextField.getText());
+                    } catch (SQLException ex) {
+                        JOptionPane.showMessageDialog(this, "Ha ocurrido una excepción: "+ex.getMessage());
+                    }
+                    
+                }
+                else if(ficheroActual == null){
+                    this.estadoInsertarjLabel.setText("El fichero no existe");
+                    this.estadoInsertarjLabel.setForeground(COLOR_ROJO);
+                }
+                else if(!tipoMotor.checkPalabra(this.anadirjTextField.getText())){
+                    
+                    this.estadoInsertarjLabel.setText("Error de caracteres");
+                    this.estadoInsertarjLabel.setForeground(COLOR_ROJO);
+                }
+                else{
+                    this.estadoInsertarjLabel.setText("La palabra existe.");
+                    this.estadoInsertarjLabel.setForeground(COLOR_ROJO);
+                    
+                    
+                }
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "Ha ocurrido una excepción: "+ex.getMessage());
             }
         }
         else if(tipoMotor.getClass() == MotorTest.class){
@@ -179,48 +192,64 @@ public class ajustesPanelGui extends javax.swing.JDialog {
             }
         }
         else if(tipoMotor.getClass() == MotorBasesDatos.class){
-            if(tipoMotor.checkPalabra(this.anadirjTextField.getText()) && !tipoMotor.cargarFichero().contains(this.anadirjTextField.getText().toUpperCase())){
-                this.estadoInsertarjLabel.setText("Se ha insertado correctamente.");
-                this.estadoInsertarjLabel.setForeground(COLOR_VERDE);
-                
-                tipoMotor.addPalabra(this.anadirjTextField.getText());
-                
-                
-            }   
-            else if(!tipoMotor.checkPalabra(this.anadirjTextField.getText())){                
-                this.estadoInsertarjLabel.setText("Error de caracteres");
-                this.estadoInsertarjLabel.setForeground(COLOR_ROJO);
-            }    
-            else{
-                this.estadoInsertarjLabel.setText("La palabra existe.");
-                this.estadoInsertarjLabel.setForeground(COLOR_ROJO);
-
-
+            try {
+                if(tipoMotor.checkPalabra(this.anadirjTextField.getText()) && !tipoMotor.existePalabra(this.anadirjTextField.getText().toUpperCase())){
+                    this.estadoInsertarjLabel.setText("Se ha insertado correctamente.");
+                    this.estadoInsertarjLabel.setForeground(COLOR_VERDE);
+                    
+                    try {
+                        tipoMotor.addPalabra(this.anadirjTextField.getText());
+                    } catch (IOException ex) {
+                        JOptionPane.showMessageDialog(this, "Ha ocurrido una excepción: "+ex.getMessage());
+                    }
+                    
+                    
+                }
+                else if(!tipoMotor.checkPalabra(this.anadirjTextField.getText())){
+                    this.estadoInsertarjLabel.setText("Error de caracteres");
+                    this.estadoInsertarjLabel.setForeground(COLOR_ROJO);
+                }
+                else{
+                    this.estadoInsertarjLabel.setText("La palabra existe.");
+                    this.estadoInsertarjLabel.setForeground(COLOR_ROJO);
+                    
+                    
+                }
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(this, "Ha ocurrido una excepción: "+ex.getMessage());
             }
         }
     }//GEN-LAST:event_anadirjButtonActionPerformed
 
     private void borrarjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_borrarjButtonActionPerformed
         if(tipoMotor.getClass() == MotorFicheroTexto.class){
-            if(tipoMotor.checkPalabra(this.borrarjTextField.getText()) && tipoMotor.cargarFichero(ficheroActual).contains(this.borrarjTextField.getText())){
-                this.estadoBorrarjLabel.setText("Se ha borrado correctamente.");
-                this.estadoBorrarjLabel.setForeground(COLOR_VERDE);
-                tipoMotor.removePalabra(this.borrarjTextField.getText());
-                
-            }
-            else if(ficheroActual == null){
-                this.estadoBorrarjLabel.setText("El fichero no existe");
-                this.estadoBorrarjLabel.setForeground(COLOR_ROJO);
-            }    
-            else if(!tipoMotor.checkPalabra(this.borrarjTextField.getText())){
-                
-                this.estadoBorrarjLabel.setText("Error de caracteres");
-                this.estadoBorrarjLabel.setForeground(COLOR_ROJO);
-            }    
-            else{
-                this.estadoBorrarjLabel.setText("La palabra no existe.");
-                this.estadoBorrarjLabel.setForeground(COLOR_ROJO);
-
+            try {
+                if(tipoMotor.checkPalabra(this.borrarjTextField.getText()) && tipoMotor.cargarFichero(ficheroActual).contains(this.borrarjTextField.getText())){
+                    this.estadoBorrarjLabel.setText("Se ha borrado correctamente.");
+                    this.estadoBorrarjLabel.setForeground(COLOR_VERDE);
+                    try {
+                        tipoMotor.removePalabra(this.borrarjTextField.getText());
+                    } catch (SQLException ex) {
+                        JOptionPane.showMessageDialog(this, "Ha ocurrido una excepción: "+ex.getMessage());
+                    }
+                    
+                }
+                else if(ficheroActual == null){
+                    this.estadoBorrarjLabel.setText("El fichero no existe");
+                    this.estadoBorrarjLabel.setForeground(COLOR_ROJO);
+                }
+                else if(!tipoMotor.checkPalabra(this.borrarjTextField.getText())){
+                    
+                    this.estadoBorrarjLabel.setText("Error de caracteres");
+                    this.estadoBorrarjLabel.setForeground(COLOR_ROJO);
+                }
+                else{
+                    this.estadoBorrarjLabel.setText("La palabra no existe.");
+                    this.estadoBorrarjLabel.setForeground(COLOR_ROJO);
+                    
+                }
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "Ha ocurrido una excepción: "+ex.getMessage());
             }
         }
         else if(tipoMotor.getClass() == MotorTest.class){
@@ -234,24 +263,32 @@ public class ajustesPanelGui extends javax.swing.JDialog {
             }
         }
         else if(tipoMotor.getClass() == MotorBasesDatos.class){
-             if(tipoMotor.checkPalabra(this.borrarjTextField.getText()) && tipoMotor.cargarFichero().contains(this.borrarjTextField.getText().toUpperCase())){
-                this.estadoBorrarjLabel.setText("Se ha borrado correctamente.");
-                this.estadoBorrarjLabel.setForeground(COLOR_VERDE);
-                
-                tipoMotor.removePalabra(this.borrarjTextField.getText());
-                
-                
-            }  
-            else if(!tipoMotor.checkPalabra(this.borrarjTextField.getText())){
-                
-                this.estadoBorrarjLabel.setText("Error de caracteres");
-                this.estadoBorrarjLabel.setForeground(COLOR_ROJO);
-            }    
-            else{
-                this.estadoBorrarjLabel.setText("La palabra no existe.");
-                this.estadoBorrarjLabel.setForeground(COLOR_ROJO);
-
-
+            try {
+                if(tipoMotor.checkPalabra(this.borrarjTextField.getText()) && tipoMotor.existePalabra(this.borrarjTextField.getText().toUpperCase())){
+                    this.estadoBorrarjLabel.setText("Se ha borrado correctamente.");
+                    this.estadoBorrarjLabel.setForeground(COLOR_VERDE);
+                    
+                    try {
+                        tipoMotor.removePalabra(this.borrarjTextField.getText());
+                    } catch (IOException ex) {
+                        JOptionPane.showMessageDialog(this, "Ha ocurrido una excepción: "+ex.getMessage());
+                    }
+                    
+                    
+                }
+                else if(!tipoMotor.checkPalabra(this.borrarjTextField.getText())){
+                    
+                    this.estadoBorrarjLabel.setText("Error de caracteres");
+                    this.estadoBorrarjLabel.setForeground(COLOR_ROJO);
+                }
+                else{
+                    this.estadoBorrarjLabel.setText("La palabra no existe.");
+                    this.estadoBorrarjLabel.setForeground(COLOR_ROJO);
+                    
+                    
+                }
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(this, "Ha ocurrido una excepción: "+ex.getMessage());
             }
         }
     }//GEN-LAST:event_borrarjButtonActionPerformed

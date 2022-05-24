@@ -6,8 +6,9 @@
 package org.daw1.Jorge.wordle;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Set;
-
+import java.sql.SQLException;
 /**
  *
  * @author alumno
@@ -15,17 +16,17 @@ import java.util.Set;
 public interface IMotores {
     public boolean checkPalabra(String string);
 
-    public String obtenerPalabraAleatoria();
+    public String obtenerPalabraAleatoria() throws SQLException, IOException;
     
-    public void createFile(File file);
+    public void createFile(File file)throws IOException;
     
-    public Set<String> cargarFichero(File file);
+    public Set<String> cargarFichero(File file)throws IOException;
+        
+    public boolean  addPalabra(String palabra) throws SQLException, IOException; 
     
-    public Set<String> cargarFichero();
+    public boolean removePalabra(String palabra) throws SQLException, IOException;
     
-    public boolean  addPalabra(String palabra); 
-    
-    public boolean removePalabra(String palabra);
+    public boolean existePalabra(String palabra) throws SQLException;
     
     
 }

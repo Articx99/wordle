@@ -13,6 +13,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -48,6 +49,11 @@ public class MotorFicheroTexto implements IMotores{
         Random rndm = new Random();
         int numAl = rndm.nextInt(n);
         return numAl;
+    }
+
+    @Override
+    public boolean existePalabra(String palabra) throws SQLException {
+        return false; //To change body of generated methods, choose Tools | Templates.
     }
     
     @Override
@@ -140,10 +146,6 @@ public class MotorFicheroTexto implements IMotores{
         return false;
     }
 
-    @Override
-    public Set<String> cargarFichero() {
-        return null; 
-    }
     
    
     

@@ -5,6 +5,8 @@
 package org.daw1.Jorge.wordle.gui;
 
 import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -12,6 +14,7 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -141,6 +144,11 @@ public final class MainGui extends javax.swing.JFrame {
                 this.finaljLabel.setText("Has perdido!!!");
                 this.finaljLabel.setForeground(COLOR_ROJO);
             }
+            try {
+                tipoMotor.existePalabra(palabraRed);
+            } catch (SQLException ex) {
+                
+            }
         }
         
                
@@ -163,28 +171,52 @@ public final class MainGui extends javax.swing.JFrame {
         if(this.jRadioButtonMenuItemEspanhol.isSelected() && this.jRadioButtonArchivoTexto.isSelected()){
             ficheroActual = espanhol;
             tipoMotor = new org.daw1.Jorge.wordle.motores.MotorFicheroTexto();
-            tipoMotor.createFile(ficheroActual);
-            palabraAleatoria = tipoMotor.obtenerPalabraAleatoria();
+            try {
+                tipoMotor.createFile(ficheroActual);
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "Ha ocurrido una excepción: "+ex.getMessage());
+            }
+            try {
+                palabraAleatoria = tipoMotor.obtenerPalabraAleatoria();
+            } catch (SQLException | IOException ex) {
+                Logger.getLogger(MainGui.class.getName()).log(Level.SEVERE, null, ex);
+            }
                     
         }
         else if(this.jRadioButtonMenuItemEspanhol.isSelected() && this.jRadioButtonTest.isSelected()){  
             tipoMotor = new org.daw1.Jorge.wordle.motores.MotorTest();
-            palabraAleatoria = tipoMotor.obtenerPalabraAleatoria();
+            try {
+                palabraAleatoria = tipoMotor.obtenerPalabraAleatoria();
+            } catch (SQLException | IOException ex) {
+                Logger.getLogger(MainGui.class.getName()).log(Level.SEVERE, null, ex);
+            }
             
         }
         else if(this.jRadioButtonMenuItemGal.isSelected() && this.jRadioButtonTest.isSelected()){
             tipoMotor = new org.daw1.Jorge.wordle.motores.MotorTest();    
-            palabraAleatoria = tipoMotor.obtenerPalabraAleatoria();
+            try {
+                palabraAleatoria = tipoMotor.obtenerPalabraAleatoria();
+            } catch (SQLException | IOException ex) {
+                Logger.getLogger(MainGui.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         else if(this.jRadioButtonMenuItemGal.isSelected() && this.jRadioButtonArchivoTexto.isSelected()){
             tipoMotor = new org.daw1.Jorge.wordle.motores.MotorFicheroTexto();
             ficheroActual = gallego;
-            tipoMotor.createFile(ficheroActual);
+            try {
+                tipoMotor.createFile(ficheroActual);
+            } catch (IOException ex) {
+                Logger.getLogger(MainGui.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
-        else if(this.jRadioButtonMenuItemEspanhol.isSelected() || this.jRadioButtonMenuItemGal.isSelected()  && this.jRadioButtonBasesDatos.isSelected()){
+        else if(this.jRadioButtonBasesDatos.isSelected()){
             tipoMotor = new org.daw1.Jorge.wordle.motores.MotorBasesDatos(idioma);
             
-            palabraAleatoria = tipoMotor.obtenerPalabraAleatoria();
+            try {
+                palabraAleatoria = tipoMotor.obtenerPalabraAleatoria();
+            } catch (SQLException | IOException ex) {
+                JOptionPane.showMessageDialog(this, "Ha ocurrido una excepción: "+ex.getMessage());
+            }
         }
     }
     
@@ -672,20 +704,24 @@ public final class MainGui extends javax.swing.JFrame {
     private void enviarjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enviarjButtonActionPerformed
         this.errorjLabel.setText("");
         if(this.jRadioButtonArchivoTexto.isSelected()){
-            if(tipoMotor.checkPalabra(this.palabrajTextField.getText()) && tipoMotor.cargarFichero(ficheroActual).contains(this.palabrajTextField.getText())){
-                checkCorrect(contadorFila);
-                
-            }
-            else if(ficheroActual == null){
-                this.errorjLabel.setText("El fichero no existe");
-            }    
-            else if(!tipoMotor.checkPalabra(this.palabrajTextField.getText())){
-                this.errorjLabel.setText("Error de caracteres");
-            }    
-            else{
-                this.errorjLabel.setText("La palabra no existe.");
-
-
+            try {
+                if(tipoMotor.checkPalabra(this.palabrajTextField.getText()) && tipoMotor.cargarFichero(ficheroActual).contains(this.palabrajTextField.getText())){
+                    checkCorrect(contadorFila);
+                    
+                }
+                else if(ficheroActual == null){
+                    this.errorjLabel.setText("El fichero no existe");
+                }
+                else if(!tipoMotor.checkPalabra(this.palabrajTextField.getText())){
+                    this.errorjLabel.setText("Error de caracteres");
+                }
+                else{
+                    this.errorjLabel.setText("La palabra no existe.");
+                    
+                    
+                }
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "Ha ocurrido una excepción: "+ex.getMessage());
             }
         }
         else if(this.jRadioButtonTest.isSelected()){
@@ -698,16 +734,20 @@ public final class MainGui extends javax.swing.JFrame {
             }
         }
         else if(this.jRadioButtonBasesDatos.isSelected()){
-            if(tipoMotor.checkPalabra(this.palabrajTextField.getText()) && tipoMotor.cargarFichero().contains(this.palabrajTextField.getText().toUpperCase())){
-                checkCorrect(contadorFila);
-            }   
-            else if(!tipoMotor.checkPalabra(this.palabrajTextField.getText().toUpperCase())){
-                this.errorjLabel.setText("Error de caracteres");
-            }    
-            else{
-                this.errorjLabel.setText("La palabra no existe.");
-
-
+            try {
+                if(tipoMotor.checkPalabra(this.palabrajTextField.getText()) && tipoMotor.existePalabra(this.palabrajTextField.getText().toUpperCase())){
+                    checkCorrect(contadorFila);
+                }
+                else if(!tipoMotor.checkPalabra(this.palabrajTextField.getText().toUpperCase())){
+                    this.errorjLabel.setText("Error de caracteres");
+                }
+                else{
+                    this.errorjLabel.setText("La palabra no existe.");
+                    
+                    
+                }
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(this, "Ha ocurrido una excepción: "+ex.getMessage());
             }
             
         }
@@ -734,7 +774,11 @@ public final class MainGui extends javax.swing.JFrame {
         if(this.jRadioButtonMenuItemEspanhol.isSelected() && this.jRadioButtonArchivoTexto.isSelected()){
             tipoMotor = new org.daw1.Jorge.wordle.motores.MotorFicheroTexto();
             ficheroActual = espanhol;
-            tipoMotor.createFile(ficheroActual);
+            try {
+                tipoMotor.createFile(ficheroActual);
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "Ha ocurrido una excepción: "+ex.getMessage());
+            }
         }
         
         else if(this.jRadioButtonMenuItemEspanhol.isSelected() && this.jRadioButtonTest.isSelected()){
@@ -757,7 +801,11 @@ public final class MainGui extends javax.swing.JFrame {
         if(this.jRadioButtonMenuItemGal.isSelected() && this.jRadioButtonArchivoTexto.isSelected()){
             tipoMotor = new org.daw1.Jorge.wordle.motores.MotorFicheroTexto();
             ficheroActual = gallego;
-            tipoMotor.createFile(ficheroActual);
+            try {
+                tipoMotor.createFile(ficheroActual);
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "Ha ocurrido una excepción: "+ex.getMessage());
+            }
             
         }
         else if(this.jRadioButtonMenuItemGal.isSelected() && this.jRadioButtonTest.isSelected()){
