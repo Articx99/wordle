@@ -28,13 +28,13 @@ public final class MainGui extends javax.swing.JFrame {
     private static final int MAX_INTENTOS = 6;
     private static final int TAMNHO_PALABRA = 5;
     private static final File espanhol = new File("./data/españolPalabras.txt");
-    private static final File gallego = new File("./data/gallegoPalabras.txt");
-    
+    private static final File gallego = new File("./data/gallegoPalabras.txt"); 
     private final javax.swing.JLabel[][] labels = new javax.swing.JLabel[MAX_INTENTOS][TAMNHO_PALABRA];
     private int contadorFila = 0;
     private String palabraAleatoria = null;
     private File ficheroActual = null;
     private final Map<String,Set<Character>> palabrasEncontradas = new HashMap<>();
+    private Set<String> datosFichero = new TreeSet<>();
    
     
        
@@ -50,19 +50,7 @@ public final class MainGui extends javax.swing.JFrame {
         
         
     }
-    /***
-    public void checkLenguaje(){
-        
-        ficheroActual = new File("palabrasEspañol.txt");
-        try {
-            tipoMotor.createFile(ficheroActual);
-            tipoMotor.cargarFichero(ficheroActual);
-        } catch (IOException ex) {
-            Logger.getLogger(MainGui.class.getName()).log(Level.SEVERE, null, ex);
-            }
-               
-    }
-    * **/
+   
     String palabraRed = "RED";
     String palabraGreen = "GREEN";
     String palabraYellow = "YELLOW";
@@ -90,7 +78,7 @@ public final class MainGui extends javax.swing.JFrame {
                     label[x][i].setText(Character.toString(lInput[i]));
                     
                     
-                    if(palabrasEncontradas.get(palabraGreen).contains(lInput[i])){
+                    if(palabrasEncontradas.get(palabraGreen).contains(lInput[i]) && lInput[i ] == lAleatoria[i-1]){
                         label[x][i].setForeground(COLOR_BLACK);
                         }
                     else{
@@ -172,6 +160,11 @@ public final class MainGui extends javax.swing.JFrame {
             ficheroActual = espanhol;
             tipoMotor = new org.daw1.Jorge.wordle.motores.MotorFicheroTexto();
             try {
+                datosFichero.addAll(tipoMotor.cargarFichero(ficheroActual));
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "Ha ocurrido una excepción: "+ex.getMessage());
+            }
+            try {
                 tipoMotor.createFile(ficheroActual);
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(this, "Ha ocurrido una excepción: "+ex.getMessage());
@@ -179,7 +172,7 @@ public final class MainGui extends javax.swing.JFrame {
             try {
                 palabraAleatoria = tipoMotor.obtenerPalabraAleatoria();
             } catch (SQLException | IOException ex) {
-                Logger.getLogger(MainGui.class.getName()).log(Level.SEVERE, null, ex);
+                JOptionPane.showMessageDialog(this, "Ha ocurrido una excepción: "+ex.getMessage());
             }
                     
         }
@@ -703,26 +696,25 @@ public final class MainGui extends javax.swing.JFrame {
 
     private void enviarjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enviarjButtonActionPerformed
         this.errorjLabel.setText("");
+        
         if(this.jRadioButtonArchivoTexto.isSelected()){
-            try {
-                if(tipoMotor.checkPalabra(this.palabrajTextField.getText()) && tipoMotor.cargarFichero(ficheroActual).contains(this.palabrajTextField.getText())){
-                    checkCorrect(contadorFila);
+           
+            if(tipoMotor.checkPalabra(this.palabrajTextField.getText()) && datosFichero.contains(this.palabrajTextField.getText())){
+                checkCorrect(contadorFila);
                     
-                }
-                else if(ficheroActual == null){
-                    this.errorjLabel.setText("El fichero no existe");
-                }
-                else if(!tipoMotor.checkPalabra(this.palabrajTextField.getText())){
-                    this.errorjLabel.setText("Error de caracteres");
-                }
-                else{
-                    this.errorjLabel.setText("La palabra no existe.");
-                    
-                    
-                }
-            } catch (IOException ex) {
-                JOptionPane.showMessageDialog(this, "Ha ocurrido una excepción: "+ex.getMessage());
             }
+            else if(ficheroActual == null){
+                this.errorjLabel.setText("El fichero no existe");
+                }
+            else if(!tipoMotor.checkPalabra(this.palabrajTextField.getText())){
+                this.errorjLabel.setText("Error de caracteres");
+                }
+            else{
+                this.errorjLabel.setText("La palabra no existe.");
+                    
+                    
+            }
+            
         }
         else if(this.jRadioButtonTest.isSelected()){
             if(tipoMotor.checkPalabra(this.palabrajTextField.getText())){
@@ -779,6 +771,11 @@ public final class MainGui extends javax.swing.JFrame {
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(this, "Ha ocurrido una excepción: "+ex.getMessage());
             }
+            try {
+                datosFichero.addAll(tipoMotor.cargarFichero(ficheroActual));
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "Ha ocurrido una excepción: "+ex.getMessage());
+            }
         }
         
         else if(this.jRadioButtonMenuItemEspanhol.isSelected() && this.jRadioButtonTest.isSelected()){
@@ -801,6 +798,12 @@ public final class MainGui extends javax.swing.JFrame {
         if(this.jRadioButtonMenuItemGal.isSelected() && this.jRadioButtonArchivoTexto.isSelected()){
             tipoMotor = new org.daw1.Jorge.wordle.motores.MotorFicheroTexto();
             ficheroActual = gallego;
+            try {
+                datosFichero.addAll(tipoMotor.cargarFichero(ficheroActual));
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "Ha ocurrido una excepción: "+ex.getMessage());
+            }
+            
             try {
                 tipoMotor.createFile(ficheroActual);
             } catch (IOException ex) {
